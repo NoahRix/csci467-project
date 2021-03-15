@@ -10,4 +10,6 @@ app.get("/", (req, res) => {
     res.send("Hello");
 });
 
+require("./app/routes/test.routes.js")(app);
+
 app.listen(3001);
