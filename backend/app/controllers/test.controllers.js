@@ -4,7 +4,7 @@ exports.parts = (req, res) => {
     test.parts(data => {
         let html = "";
         data.forEach(item => {
-            html += `<img src="${item.pictureURL}"><br>` 
+            html += `<img src="${item.pictureURL}"><br>\n` 
         });
         res.send(html);
     })
