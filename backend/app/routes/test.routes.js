@@ -3,5 +3,5 @@ module.exports = app => {
 
     app.get("/api/test/parts", test.parts);
     app.get("/api/test/test", test.test);
-
+    app.get("/api/test/part-by-number", test.partByNumber);
 }
