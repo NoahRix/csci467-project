@@ -15,3 +15,10 @@ exports.test = (req, res) => {
         res.send(data);
     })
 }
+
+exports.partByNumber = (req, res) => {
+    console.log(req.body.number);
+    test.partByNumber(req.body.number, (data) => {
+        res.send(data);
+    })
+}
