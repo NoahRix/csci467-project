@@ -4,6 +4,6 @@ module.exports = app => {
     app.get("/api/inventory/all", inventory.all);
     app.post("/api/inventory/update", inventory.update);
     app.post("/api/inventory/new", inventory.new);
-    app.get("/api/inventory/update-all-rows", inventory.updateAllRows);
+    app.post("/api/inventory/update-all-rows", inventory.updateAllRows);
     app.post("/api/inventory/delete-rows-by-ids", inventory.deleteRowsByIDs);
 }
