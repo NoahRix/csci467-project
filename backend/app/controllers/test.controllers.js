@@ -8,33 +8,24 @@ exports.parts = (req, res) => {
 
 exports.partNum = (req, res) => {
     const partNumber = req.body.partNumber;
-    const query = `select * from parts where number = ${partNumber}`;
 
     test.partNum(data => {
         res.send(data);
-    }, query)
+    }, partNumber)
 }
 
 exports.priceRange = (req, res) => {
-    const lowerPrice = req.body.lowerPrice;
-    const upperPrice = req.body.upperPrice;
-
-    const query = `select * from parts where price between ${lowerPrice} and ${upperPrice}`;
 
     test.priceRange(data => {
         res.send(data);
-    }, query);
+    }, req.body);
 }
 
 exports.weightRange = (req, res) => {
-    const lowerWeight = req.body.lowerWeight;
-    const upperWeight = req.body.upperWeight;
-
-    const query = `select * from parts where weight between ${lowerWeight} and ${upperWeight}`;
 
     test.weightRange(data => {
         res.send(data);
-    }, query);
+    }, req.body);
 }
 
 exports.test = (req, res) => {
