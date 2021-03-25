@@ -3,5 +3,4 @@ module.exports = app => {
 
     app.get("/api/test/parts", test.parts);
     app.get("/api/test/test", test.test);
-
 }

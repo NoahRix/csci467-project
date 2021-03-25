@@ -11,5 +11,5 @@ app.get("/", (req, res) => {
 });
 
 require("./app/routes/test.routes.js")(app);
-
+require("./app/routes/customers.routes")(app);
 app.listen(3001);
