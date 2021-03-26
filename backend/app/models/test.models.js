@@ -25,3 +25,7 @@ exports.weightRange = (result, body) => {
 exports.test = result => {
     db_tools.execute(`select * from bugs`, result);
 }
+
+exports.partByNumber = (number, result) => {
+    legacy_db_tools.execute(`select * from parts where number = ?`, result, [number]);
+}

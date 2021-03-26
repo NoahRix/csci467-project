@@ -1,0 +1,72 @@
+
+###
+POST http://localhost:3001/api/inventory/update
+Content-Type: application/json
+
+{
+    "quantity": 100,
+    "part_id": 1
+}
+
+###
+
+POST http://localhost:3001/api/inventory/new
+Content-Type: application/json
+
+{
+    "quantity": 0,
+    "part_id": 1
+}
+
+###
+
+POST http://localhost:3001/api/inventory/delete-rows-by-ids
+Content-Type: application/json
+
+{
+    "part_ids": [150, 151, 152, 153, 154, 155]
+}
+
+###
+
+
+GET http://localhost:3001/api/test/part-by-number
+Content-Type: application/json
+
+{
+    "number": 1
+}
+
+###
+GET http://localhost:3001/api/inventory/by-part-id
+Content-Type: application/json
+
+{
+    "part_id": 1
+}
+
+###
+
+POST http://localhost:3001/api/inventory/new
+Content-Type: application/json
+
+{
+    "part_id": 140,
+    "quantity": 0
+}
+
+###
+
+GET http://localhost:3001/api/inventory/update-all-rows
+Content-Type: application/json
+
+{
+}
+
+###
+
+GET http://localhost:3001/api/inventory/total-floor-price
+Content-Type: application/json
+
+{
+}
