@@ -5,6 +5,23 @@ exports.parts = result => {
     legacy_db_tools.execute(`select * from parts`, result);
 }
 
+exports.partNum = (result, partNumber) => {
+    const query = `select * from parts where number = ?`;
+    legacy_db_tools.execute(query, result, [partNumber]);
+}
+
+exports.priceRange = (result, body) => {
+    
+    const query = `select * from parts where price between ? and ?`;
+    legacy_db_tools.execute(query, result, Object.values(body)); // gives the values of the object
+}
+
+exports.weightRange = (result, body) => {
+
+    const query = `select * from parts where weight between ? and ?`;
+    legacy_db_tools.execute(query, result, Object.values(body));
+}
+
 exports.test = result => {
     db_tools.execute(`select * from bugs`, result);
 }
