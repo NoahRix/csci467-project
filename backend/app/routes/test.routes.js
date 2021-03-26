@@ -7,5 +7,4 @@ module.exports = app => {
     app.post("/api/parts/by-weight-range", test.weightRange);
 
     app.get("/api/test/test", test.test);
-
 }
