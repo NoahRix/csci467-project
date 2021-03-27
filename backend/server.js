@@ -11,7 +11,7 @@ app.get("/", (req, res) => {
     res.send("Hello");
 });
 
-require("./app/routes/test.routes.js")(app);
+require("./app/routes/parts.routes.js")(app);
 
 require("./app/routes/inventory.routes.js")(app);
 

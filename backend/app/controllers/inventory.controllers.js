@@ -1,5 +1,5 @@
 const inventory = require("../models/inventory.models.js");
-const test = require("../models/test.models.js");
+const test = require("../models/parts.models.js");
 
 /**
  *  This gets all of the rows in the inventory table.
@@ -168,7 +168,7 @@ const test = require("../models/test.models.js");
 
     // Check if the given part_id exists in the part table.
     let check_part = new Promise(resolve => {
-        require('../models/test.models').partByNumber(part_id, (data) => {
+        require('../models/parts.models').partByNumber(part_id, (data) => {
             return_val = data[0] ? true : false;
             resolve();
         });        
