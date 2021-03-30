@@ -58,3 +58,32 @@ exports.name = (name, result) => {
 exports.address = (address, result) => {
     db_tools.execute('sellect * from customers where address = ?', result, [address]);
 }
+
+exports.addCustomer = (customer, result) => {
+    db_tools.execute('insert into customers (name, address, email, phone) values (?, ?, ?, ?)', 
+        result, 
+        [
+            customer.name,
+            customer.address,
+            customer.email,
+            customer.phone
+        ]
+    );
+}
+
+exports.updateCustomer = (customer, result) => {
+    db_tools.execute('update customers set name = ?, address = ?, email = ?, phone = ? where id = ?', 
+        result, 
+        [
+            customer.name,
+            customer.address,
+            customer.email,
+            customer.phone,
+            customer.id
+        ]
+    );
+}
+
+exports.deleteCustomer = (id, result) => {
+    db_tools.execute('delete from customers where id = ?', result, [id]);
+}
