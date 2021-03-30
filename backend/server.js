@@ -17,4 +17,6 @@ require("./app/routes/inventory.routes.js")(app);
 
 require("./app/routes/customers.routes")(app);
 
+require("./app/routes/orders.routes")(app);
+
 app.listen(3001);
