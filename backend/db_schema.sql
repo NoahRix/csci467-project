@@ -47,7 +47,7 @@ create table `order_items`(
     `part_id` int,
     `quantity` int,
     primary key(`order_id`, `part_id`),
-    foreign key(`order_id`) references `orders`(`id`)
+    foreign key(`order_id`) references `orders`(`id`) on delete cascade
 );
 
 create table `inventory`(
