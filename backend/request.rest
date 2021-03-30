@@ -70,3 +70,16 @@ Content-Type: application/json
 
 {
 }
+
+###
+
+POST http://blitz.cs.niu.edu/CreditCard/
+Content-Type: application/json
+
+{
+    "vendor": "VE001-100",
+    "cc": "6011 1234 4321 1234",
+    "name": "John Doe",
+    "exp": "12/2024",
+    "amount": "654.32"
+}
