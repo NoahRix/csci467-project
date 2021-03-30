@@ -21,11 +21,15 @@ create table `workers`(
     primary key(`id`)
 );
 
+create table `shipping_information`(
+    `type` varchar(255) primary key,
+    `cost` decimal(7,2) 
+);
+
 create table `orders`(
     `id` int auto_increment primary key,
     `order_shipped` tinyint unsigned,
     `order_confirmed` tinyint unsigned,
-    `order_recieved` tinyint unsigned,
     `payment_info` varchar(255),
     `tax_rate` decimal (4, 2),
     `shipping_handling_price` decimal(4, 2),
