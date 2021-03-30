@@ -1,8 +1,8 @@
 node_modules
+package-lock.json
 .idea
 .env
 .vscode
-.package-lock.json
 .pnp
 .pnp.js
 
