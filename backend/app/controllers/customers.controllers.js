@@ -35,3 +35,21 @@ exports.address = (req, res) => {
         res.send(data);
     })
 }
+
+exports.addCustomer = (req, res) => {
+    customers.addCustomer(req.body, (data) => {
+        res.send(data);
+    })
+}
+
+exports.updateCustomer = (req, res) => {
+    customers.updateCustomer(req.body, (data) => {
+        res.send(data);
+    })
+}
+
+exports.deleteCustomer = (req, res) => {
+    customers.deleteCustomer(req.body.id, (data) => {
+        res.send(data);
+    })
+}

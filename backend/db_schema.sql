@@ -34,7 +34,7 @@ create table `orders`(
     `timestamp` datetime,
     `customer_id` int,
     `worker_id` int,
-    foreign key(`customer_id`) references `customers`(`id`),
+    foreign key(`customer_id`) references `customers`(`id`) on delete cascade,
     foreign key(`worker_id`) references `workers`(`id`)
 );
 

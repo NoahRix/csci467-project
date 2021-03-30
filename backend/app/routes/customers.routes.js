@@ -8,5 +8,7 @@ module.exports = app => {
     app.post("/api/customers/by-name", customers.name);
     app.post("/api/customers/by-address", customers.address);
 
-
+    app.post("/api/customers/add", customers.addCustomer);
+    app.patch("/api/customers/update", customers.updateCustomer);
+    app.delete("/api/customers/delete", customers.deleteCustomer);
 }

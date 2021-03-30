@@ -27,3 +27,37 @@ FROM Book INNER JOIN Wrote
 USING (BookCode) JOIN Author 
 USING (AuthorNum) 
 WHERE Title = 'Black House' AND Sequence = 1;
+
+
+--=================== Rutvik's Queries ===================--
+insert into `customers` (`name`, `address`, `email`, `phone`)
+values ('Rutvik Patel', '482 Kindle Rd, DeKalb, IL, 60115', 'rutvik503@gmail.com', '2248069761');
+
+insert into `customers` (`name`, `address`, `email`, `phone`)
+values ('Hardik Patel', '389 Boty Circle APT 1, Hoffman Estates, IL, 60169', 'hardikpatel123@gmail.com', '8476738923');
+
+insert into `customers` (`name`, `address`, `email`, `phone`)
+values ('Kavan Patel', '5729 Anibleed Rd, Elgin, IL, 60120', 'kvn195@gmail.com', '2249021100');
+
+update `customers` 
+set `name` = "Rutvik S Patel", 
+    `address` = '1390 Hibbing Rd, Elk Grove, IL, 60291',
+    `email` = "rutvikp@gmail.com",
+    `phone` = '8472940953'
+where `id` = 1
+
+delete from `customers` where `id` = 2;
+
+--=================== Hardik's Queries ===================--
+
+insert into `orders` (`order_shipped`, `order_confirmed`, `order_recieved`, `payment_info`, `tax_rate`, `shipping_handling_price`,
+`billing_address`, `shipping_address`, `timestamp`, `customer_id`, `worker_id`)
+values(0, 0, 0, 'blah', 8.25, 5.99, '430 russell rd apt 5', '430 russell rd apt 5', '2021-03-29 00:21:05', 1, 1);
+
+insert into `orders` (`order_shipped`, `order_confirmed`, `order_recieved`, `payment_info`, `tax_rate`, `shipping_handling_price`,
+`billing_address`, `shipping_address`, `timestamp`, `customer_id`, `worker_id`)
+values(1, 1, 1, 'blah', 7.10, 9.99, '307 sutherland ln', '307 sutherland ln', '2021-02-14 17:15:25', 2, 1);
+
+insert into `orders` (`order_shipped`, `order_confirmed`, `order_recieved`, `payment_info`, `tax_rate`, `shipping_handling_price`,
+`billing_address`, `shipping_address`, `timestamp`, `customer_id`, `worker_id`)
+values(0, 1, 1, 'blah', 8.99, 10.49, '431 russell rd apt 6', '431 russell rd apt 6', '2021-01-26 08:36:50', 3, 1);
