@@ -56,7 +56,7 @@ exports.name = (name, result) => {
  *  @param result Callback to send back data.
  */
 exports.address = (address, result) => {
-    db_tools.execute('sellect * from customers where address = ?', result, [address]);
+    db_tools.execute('select * from customers where address = ?', result, [address]);
 }
 
 exports.addCustomer = (customer, result) => {
