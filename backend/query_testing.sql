@@ -11,9 +11,6 @@ insert into `inventory` values
 (158, 0);
 
 use `h1gtfw3uuuyktywj`;
-delete from `inventory`
-
-use `h1gtfw3uuuyktywj`;
 select * from `inventory`;
 
 use `h1gtfw3uuuyktywj`;
@@ -21,6 +18,15 @@ delete from `inventory` where `part_id` in (150, 151, 152, 153, 154, 155);
 
 use `h1gtfw3uuuyktywj`;
 delete from `inventory` where `part_id` > 70;
+
+use `h1gtfw3uuuyktywj`;
+select `refresh_token` from `customers` where `id` = 1;
+
+use `h1gtfw3uuuyktywj`;
+select `id`, `refresh_token` from `workers`;
+
+use `h1gtfw3uuuyktywj`;
+select `id`, `refresh_token` from `customers`;
 
 use `h1gtfw3uuuyktywj`;
 insert into `workers` (`password`, `name`, `is_admin`, `pay_rate`, `department`) values
