@@ -90,6 +90,16 @@ POST http://localhost:3001/api/auth/customer-login
 Content-Type: application/json
 
 {
-    "email": "rutvik503@gmail.com",
+    "id": 1,
+    "password": "1234"
+}
+
+###
+
+POST http://localhost:3001/api/auth/employee-login
+Content-Type: application/json
+
+{
+    "id": 4,
     "password": "1234"
 }

@@ -22,6 +22,12 @@ delete from `inventory` where `part_id` in (150, 151, 152, 153, 154, 155);
 use `h1gtfw3uuuyktywj`;
 delete from `inventory` where `part_id` > 70;
 
+use `h1gtfw3uuuyktywj`;
+insert into `workers` (`password`, `name`, `is_admin`, `pay_rate`, `department`) values
+('$2a$10$aMk9VEsdwFZLdW.F7bhkPetkWHfh1nf8Y/eoNBghK8Dd76PadrsmC', 'Noah Rix', 1, 30.70, 'Operations'),
+('$2a$10$aMk9VEsdwFZLdW.F7bhkPetkWHfh1nf8Y/eoNBghK8Dd76PadrsmC', 'James Smith', 0, 14.50, 'Loading Dock'),
+('$2a$10$aMk9VEsdwFZLdW.F7bhkPetkWHfh1nf8Y/eoNBghK8Dd76PadrsmC', 'Jennifer Doe', 0, 17.95, 'Packing');
+
 -- =================== Rutvik's Queries ===================--
 -- Hashed passwords added by Noah. All passwords decrypt to 1234.
 use `h1gtfw3uuuyktywj`;
