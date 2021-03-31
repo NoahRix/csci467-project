@@ -61,7 +61,7 @@ exports.userLogin = async (req, res) => {
                     auth_object.access_token = AuthUtil.generateAccessToken(token_details);
                     auth_object.refresh_token = JWT.sign(token_details, is_customer ? process.env.CUSTOMER_REFRESH_TOKEN_SECRET : process.env.EMPLOYEE_REFRESH_TOKEN_SECRET);    
                     auth_object.is_authed = true;
-                    auth_object.is_admin = is_customer ? null : is_admin;
+                    auth_object.is_admin = is_customer ? false : is_admin === 1;
                 }
                 resolve();
             });
