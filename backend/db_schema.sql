@@ -1,6 +1,6 @@
 use `h1gtfw3uuuyktywj`;
 
-drop table if exists `inventory`, `order_items`, `orders`, `workers`, `customers`;
+drop table if exists `inventory`, `order_items`, `orders`, `shipping_information`, `workers`, `customers`;
 
 create table `customers`(
    `id` int auto_increment,
