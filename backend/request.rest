@@ -83,3 +83,13 @@ Content-Type: application/json
     "exp": "12/2024",
     "amount": "654.32"
 }
+
+###
+
+POST http://localhost:3001/api/auth/customer-login
+Content-Type: application/json
+
+{
+    "email": "rutvik503@gmail.com",
+    "password": "1234"
+}
