@@ -14,9 +14,9 @@ exports.authenticateToken = (req, res, next) => {
     })
 }
 
-exports.generateAccessToken = (email) => {
+exports.generateAccessToken = (id) => {
     console.log("NEW TOKEN")
-    return JWT.sign(email, process.env.CUSTOMER_ACCESS_TOKEN_SECRET, { expiresIn: '3h' });
+    return JWT.sign(id, process.env.CUSTOMER_ACCESS_TOKEN_SECRET, { expiresIn: '3h' });
 }
 
 exports.middleware = (debug ? (req, res, next) => { next(); } : this.authenticateToken);
