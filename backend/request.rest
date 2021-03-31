@@ -83,3 +83,34 @@ Content-Type: application/json
     "exp": "12/2024",
     "amount": "654.32"
 }
+
+###
+
+POST http://localhost:3001/api/auth/user-login
+Content-Type: application/json
+
+{
+    "id": 2,
+    "password": "1234",
+    "is_customer": true
+}
+
+###
+
+POST http://localhost:3001/api/auth/user-logout
+Content-Type: application/json
+
+{
+    "id": 1,
+    "is_customer": false
+}
+
+###
+
+POST http://localhost:3001/api/auth/refresh-user-access-token
+Content-Type: application/json
+
+{
+    "id": 1,
+    "is_customer": false
+}

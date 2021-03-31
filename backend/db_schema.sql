@@ -1,12 +1,14 @@
 use `h1gtfw3uuuyktywj`;
 
-drop table if exists `inventory`, `order_items`, `orders`, `workers`, `customers`;
+drop table if exists `inventory`, `order_items`, `orders`, `shipping_information`, `workers`, `customers`;
 
 create table `customers`(
    `id` int auto_increment,
    `name` varchar(255),
    `address` varchar(255),
    `email` varchar(255),
+   `password` varchar(255),
+   `refresh_token` varchar(255) default null,
    `phone` char(10),
    primary key(`id`)
 );
@@ -14,6 +16,7 @@ create table `customers`(
 create table `workers`(
     `id` int auto_increment,
     `password` varchar(255),
+    `refresh_token` varchar(255) default null,
     `name` varchar(255), 
     `is_admin` tinyint unsigned,
     `pay_rate` decimal(4, 2),
