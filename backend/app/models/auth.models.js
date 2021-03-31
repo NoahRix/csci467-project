@@ -27,15 +27,65 @@ const db_tools = require("../utils/db-tools");
  *  @param result Callback function to send the response data.
  */
  exports.logout = (id, result) => {
-    dbt.execute("update customers set refresh_token = NULL where id = ?", result, [id]);
+    db_tools.execute("update customers set refresh_token = NULL where id = ?", result, [id]);
 }
 
 /**
- *  Expires the access token of the employee to be logged out.
+ *  Expires the refresh token of the customer to be logged out.
+ *
+ *  @param id Customer's id number.
+ *  @param result Callback function to send the response data.
+ */
+ exports.customerLogout = (id, result) => {
+    db_tools.execute("update customers set refresh_token = NULL where id = ?", result, [id]);
+}
+
+/**
+ *  Expires the refresh token of the employee to be logged out.
  *
  *  @param id Employee's id number.
  *  @param result Callback function to send the response data.
  */
- exports.logout = (id, result) => {
-    dbt.execute("update workers set refresh_token = NULL where id = ?", result, [id]);
+ exports.employeeLogout = (id, result) => {
+    db_tools.execute("update workers set refresh_token = NULL where id = ?", result, [id]);
+}
+
+/**
+ *  Sets the customer's refresh token.
+ *
+ *  @param customer_info Customer's new refresh token to set and id.
+ *  @param result Callback function to send the response data.
+ */
+ exports.setCustomerRefreshToken = (customer_info, result) => {
+    db_tools.execute("update customers set refresh_token = ? where id = ?", result, Object.values(customer_info));
+}
+
+/**
+ *  Sets the employee's refresh token.
+ *
+ *  @param employee_info Employee's new refresh token to set and id.
+ *  @param result Callback function to send the response data.
+ */
+ exports.setEmployeeRefreshToken = (employee_info, result) => {
+    db_tools.execute("update workers set refresh_token = ? where id = ?", result, Object.values(employee_info));
+}
+
+/**
+ *  Gets the customer's refresh token from the database.
+ *
+ *  @param id Customer's id.
+ *  @param result Callback function to send the response data.
+ */
+ exports.getCustomerRefreshToken = (id, result) => {
+    db_tools.execute("select refresh_token from customers where id = ?", result, [id])
+}
+
+/**
+ *  Gets the employee's refresh token from the database.
+ *
+ *  @param id Employees's id.
+ *  @param result Callback function to send the response data.
+ */
+ exports.getEmployeeRefreshToken = (id, result) => {
+    db_tools.execute("select refresh_token from workers where id = ?", result, [id])
 }
