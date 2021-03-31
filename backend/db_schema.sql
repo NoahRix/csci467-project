@@ -7,6 +7,7 @@ create table `customers`(
    `name` varchar(255),
    `address` varchar(255),
    `email` varchar(255),
+   `password` varchar(255),
    `phone` char(10),
    primary key(`id`)
 );
