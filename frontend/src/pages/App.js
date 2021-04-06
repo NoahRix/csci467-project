@@ -11,6 +11,7 @@ import Footer from "../components/Footer";
 import { AuthContext } from '../utils/AuthContext';
 import CustomerProtectedRoute from './CustomerProtectedRoute';
 import EmployeeProtectedRoute from './EmployeeProtectedRoute';
+import AdminProtectedRoute from './AdminProtectedRoute';
 import LoginPage from './LoginPage';
 
 function useLocalStorage(key, initialValue) {
@@ -76,6 +77,9 @@ function App() {
   // For administrator purposes
   const [isAdmin, setIsAdmin] = useLocalStorage('isAdmin', false);
 
+  // Shopping Cart Data
+  const [shoppingCartContents, setShoppingCartContents] = useLocalStorage('shoppingCartContents', []);
+
   return (
     <div>
       <BrowserRouter>
@@ -99,7 +103,9 @@ function App() {
               setIsCustomerAuthed,
               setIsEmployeeAuthed,
               isAdmin,
-              setIsAdmin
+              setIsAdmin,
+              shoppingCartContents,
+              setShoppingCartContents
             }}>
             <Navbar/>
             <Route exact path="/" component={Home}/>
@@ -108,7 +114,7 @@ function App() {
             <CustomerProtectedRoute exact path="/CustomerOrders" component={CustomerOrders}/>
             <EmployeeProtectedRoute exact path="/InventoryDashboard" component={InventoryDashboard}/>
             <CustomerProtectedRoute exact path="/OrdersDashboard" component={OrdersDashboard}/>
-            <EmployeeProtectedRoute exact path="/ShippingDashboard" component={ShippingDashboard}/>
+            <AdminProtectedRoute exact path="/ShippingDashboard" component={ShippingDashboard}/>
             <Footer/>
           </AuthContext.Provider>
         </Switch>

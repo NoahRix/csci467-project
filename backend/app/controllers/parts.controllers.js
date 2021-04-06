@@ -18,13 +18,28 @@ exports.all = (req, res) => {
  *  @param req Request data. Used to get the part number.
  *  @param res Response data that shows the row in the parts table with the specified part.
  */
-exports.partNum = (req, res) => {
+ exports.partNum = (req, res) => {
     const partNumber = req.body.partNumber;
 
     parts.partNum(data => {
         res.send(data);
     }, partNumber)
 }
+
+/**
+ *  This gets a single row in the part table ( based on part number )
+ *
+ *  @param req Request data. Holds the list of part numbers.
+ *  @param res Response data that shows the row in the parts table with the specified part.
+ */
+ exports.byPartNumbers = (req, res) => {
+    const partNumbers = req.body.partNumbers;
+
+    parts.byPartNumbers(data => {
+        res.send(data);
+    }, partNumbers)
+}
+
 /**
  *  This gets multiple rows in the parts table ( based on price range )
  *
