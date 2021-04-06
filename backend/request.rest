@@ -114,3 +114,12 @@ Content-Type: application/json
     "id": 1,
     "is_customer": false
 }
+
+###
+
+POST http://localhost:3001/api/parts/by-part-numbers
+Content-Type: application/json
+
+{
+    "partNumbers": [100,2,3,4,5,6,1000]
+}

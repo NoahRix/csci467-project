@@ -16,9 +16,29 @@ exports.allParts = result => {
  *  @param result Callback to send back data.
  *  @param partNumber The part number to add into the query.
  */
-exports.partNum = (result, partNumber) => {
+ exports.partNum = (result, partNumber) => {
     const query = `select * from parts where number = ?`;
     legacy_db_tools.execute(query, result, [partNumber]);
+}
+
+/**
+ *  Gets row with a specific part number.
+ * 
+ *  @param result Callback to send back data.
+ *  @param partNumbers The part numbers array for the where in clause.
+ */
+ exports.byPartNumbers = (result, partNumbers) => {
+
+    let placeholders = "";
+
+    partNumbers.forEach(() => {
+        placeholders += "?,";
+    });
+
+    placeholders = placeholders.replace(/,$/, "");
+    
+    const query = `select * from parts where number in (` + placeholders + `)`;
+    legacy_db_tools.execute(query, result, partNumbers);
 }
 
 /**
