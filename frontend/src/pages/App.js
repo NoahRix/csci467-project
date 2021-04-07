@@ -84,6 +84,7 @@ function App() {
     <div>
       <BrowserRouter>
         <Switch>
+          <Route exact path="/CustomerOrders" component={CustomerOrders}/>
           <AuthContext.Provider
             value={{
               customerAccessToken,
