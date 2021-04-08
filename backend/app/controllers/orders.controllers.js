@@ -6,6 +6,12 @@ exports.allOrders = (req, res) => {
     })
 }
 
+exports.ordersOfCustomer = (req, res) => {
+    orders.ordersOfCustomer(req.body.customerId, data => {
+        res.send(data);
+    })
+}
+
 exports.addOrder = (req, res) => {
     orders.addOrder(req.body, (data) => {
         res.send(data);
@@ -20,6 +26,12 @@ exports.updateOrder = (req, res) => {
 
 exports.deleteOrder = (req, res) => {
     orders.deleteOrder(req.body.id, (data) => {
+        res.send(data);
+    })
+}
+
+exports.orderItems = (req, res) => {
+    orders.orderItems(req.body.orderId, (data) => {
         res.send(data);
     })
 }

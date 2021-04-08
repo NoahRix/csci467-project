@@ -6,4 +6,6 @@ module.exports = app => {
     app.patch("/api/orders/update", orders.updateOrder);
     app.delete("/api/orders/delete", orders.deleteOrder);
 
+    app.post("/api/orders/ordersOfCustomer", orders.ordersOfCustomer);
+    app.post("/api/orders/orderItems", orders.orderItems);
 }

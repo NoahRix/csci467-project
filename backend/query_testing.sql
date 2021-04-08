@@ -59,15 +59,16 @@ where `id` = 1;
 delete from `customers` where `id` = 2;
 
 -- =================== Hardik's Queries ===================--
-insert into `orders` (`order_shipped`, `order_confirmed`, `payment_info`, `tax_rate`, `shipping_handling_price`,
+
+insert into `orders` (`order_shipped`, `order_confirmed`, `payment_info`, `tax_amount`, `shipping_handling_price`,
 `billing_address`, `shipping_address`, `timestamp`, `customer_id`, `worker_id`)
 values(0, 0, 'blah', 8.25, 5.99, '430 russell rd apt 5', '430 russell rd apt 5', '2021-03-29 00:21:05', 1, 1);
 
-insert into `orders` (`order_shipped`, `order_confirmed`, `payment_info`, `tax_rate`, `shipping_handling_price`,
+insert into `orders` (`order_shipped`, `order_confirmed`, `payment_info`, `tax_amount`, `shipping_handling_price`,
 `billing_address`, `shipping_address`, `timestamp`, `customer_id`, `worker_id`)
 values(1, 1, 'blah', 7.10, 9.99, '307 sutherland ln', '307 sutherland ln', '2021-02-14 17:15:25', 2, 1);
 
-insert into `orders` (`order_shipped`, `order_confirmed`, `payment_info`, `tax_rate`, `shipping_handling_price`,
+insert into `orders` (`order_shipped`, `order_confirmed`, `payment_info`, `tax_amount`, `shipping_handling_price`,
 `billing_address`, `shipping_address`, `timestamp`, `customer_id`, `worker_id`)
 values(0, 1, 'blah', 8.99, 10.49, '431 russell rd apt 6', '431 russell rd apt 6', '2021-01-26 08:36:50', 3, 1);
 
