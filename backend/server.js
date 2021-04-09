@@ -32,4 +32,6 @@ require("./app/routes/auth.routes")(app);
 
 require("./app/routes/workers.routes")(app);
 
+require("./app/routes/shippingInfo.routes")(app);
+
 app.listen(3001);
