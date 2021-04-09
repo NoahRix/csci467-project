@@ -29,12 +29,12 @@ use `h1gtfw3uuuyktywj`;
 select `id`, `refresh_token` from `customers`;
 
 use `h1gtfw3uuuyktywj`;
-insert into `workers` (`password`, `name`, `is_admin`, `pay_rate`, `department`) 
-values ('$2a$10$aMk9VEsdwFZLdW.F7bhkPetkWHfh1nf8Y/eoNBghK8Dd76PadrsmC', 'Noah Rix', 1, 30.70, 'Operations');
-insert into `workers` (`password`, `name`, `is_admin`, `pay_rate`, `department`) 
-values ('$2a$10$aMk9VEsdwFZLdW.F7bhkPetkWHfh1nf8Y/eoNBghK8Dd76PadrsmC', 'James Smith', 0, 14.50, 'Loading Dock');
-insert into `workers` (`password`, `name`, `is_admin`, `pay_rate`, `department`) 
-values ('$2a$10$aMk9VEsdwFZLdW.F7bhkPetkWHfh1nf8Y/eoNBghK8Dd76PadrsmC', 'Jennifer Doe', 0, 17.95, 'Packing');
+insert into `workers` (`password`, `name`, `is_admin`, `pay_rate`, `department`, `email`) 
+values ('$2a$10$aMk9VEsdwFZLdW.F7bhkPetkWHfh1nf8Y/eoNBghK8Dd76PadrsmC', 'Noah Rix', 1, 30.70, 'Operations', 'nrix@gmail.com');
+insert into `workers` (`password`, `name`, `is_admin`, `pay_rate`, `department`, `email`) 
+values ('$2a$10$aMk9VEsdwFZLdW.F7bhkPetkWHfh1nf8Y/eoNBghK8Dd76PadrsmC', 'James Smith', 0, 14.50, 'Loading Dock', 'jsmith@gmail.com');
+insert into `workers` (`password`, `name`, `is_admin`, `pay_rate`, `department`, `email`) 
+values ('$2a$10$aMk9VEsdwFZLdW.F7bhkPetkWHfh1nf8Y/eoNBghK8Dd76PadrsmC', 'Jennifer Doe', 0, 17.95, 'Packing', 'jdoe@gmail.com');
 
 -- =================== Rutvik's Queries ===================--
 -- Hashed passwords added by Noah. All passwords decrypt to 1234.
@@ -61,20 +61,20 @@ delete from `customers` where `id` = 2;
 -- =================== Hardik's Queries ===================--
 
 insert into `orders` (`order_shipped`, `order_confirmed`, `payment_info`, `tax_amount`, `shipping_handling_price`,
-`billing_address`, `shipping_address`, `timestamp`, `customer_id`, `worker_id`)
-values(0, 0, 'blah', 8.25, 5.99, '430 russell rd apt 5', '430 russell rd apt 5', '2021-03-29 00:21:05', 1, 1);
+`billing_address`, `shipping_address`, `timestamp`, `customer_id`, `worker_id`, `total_price`, `total_items`)
+values(0, 0, 'blah', 8.25, 5.99, '430 russell rd apt 5', '430 russell rd apt 5', '2021-03-29 00:21:05', 1, 1, 493.94, 5);
 
 insert into `orders` (`order_shipped`, `order_confirmed`, `payment_info`, `tax_amount`, `shipping_handling_price`,
-`billing_address`, `shipping_address`, `timestamp`, `customer_id`, `worker_id`)
-values(1, 1, 'blah', 7.10, 9.99, '307 sutherland ln', '307 sutherland ln', '2021-02-14 17:15:25', 2, 1);
+`billing_address`, `shipping_address`, `timestamp`, `customer_id`, `worker_id`, `total_price`, `total_items`)
+values(1, 1, 'blah', 7.10, 9.99, '307 sutherland ln', '307 sutherland ln', '2021-02-14 17:15:25', 2, 1, 294.23, 3);
 
 insert into `orders` (`order_shipped`, `order_confirmed`, `payment_info`, `tax_amount`, `shipping_handling_price`,
-`billing_address`, `shipping_address`, `timestamp`, `customer_id`, `worker_id`)
-values(0, 1, 'blah', 8.99, 10.49, '431 russell rd apt 6', '431 russell rd apt 6', '2021-01-26 08:36:50', 3, 1);
+`billing_address`, `shipping_address`, `timestamp`, `customer_id`, `worker_id`, `total_price`, `total_items`)
+values(0, 1, 'blah', 8.99, 10.49, '431 russell rd apt 6', '431 russell rd apt 6', '2021-01-26 08:36:50', 3, 1, 483.97, 7);
 
-insert into `orders` (`order_shipped`, `order_confirmed`, `payment_info`, `tax_rate`, `shipping_handling_price`,
-`billing_address`, `shipping_address`, `timestamp`, `customer_id`, `worker_id`)
-values(1, 1, 'Paid by credit card ending in 3945', 7.25, 5.99, '430 russell rd apt 5', '430 russell rd apt 5', '2021-04-03 00:03:05', 1, 1);
+insert into `orders` (`order_shipped`, `order_confirmed`, `payment_info`, `tax_amount`, `shipping_handling_price`,
+`billing_address`, `shipping_address`, `timestamp`, `customer_id`, `worker_id`, `total_price`, `total_items`)
+values(1, 1, 'Paid by credit card ending in 3945', 7.25, 5.99, '430 russell rd apt 5', '430 russell rd apt 5', '2021-04-03 00:03:05', 1, 1, 857.44, 54);
 
 --=================== Rutvik's Queries ===================--
 insert into `shipping_information` (`type`, `cost`) values ('Free', 0);

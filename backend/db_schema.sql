@@ -6,7 +6,7 @@ create table `customers`(
    `id` int auto_increment,
    `name` varchar(255),
    `address` varchar(255),
-   `email` varchar(255),
+   `email` varchar(255) NOT NULL UNIQUE,
    `password` varchar(255),
    `refresh_token` varchar(255) default null,
    `phone` char(10),
@@ -15,9 +15,10 @@ create table `customers`(
 
 create table `workers`(
     `id` int auto_increment,
+    `name` varchar(255), 
+    `email` varchar(255) NOT NULL UNIQUE,
     `password` varchar(255),
     `refresh_token` varchar(255) default null,
-    `name` varchar(255), 
     `is_admin` tinyint unsigned,
     `pay_rate` decimal(4, 2),
     `department` varchar(255),
@@ -31,14 +32,16 @@ create table `shipping_information`(
 
 create table `orders`(
     `id` int auto_increment primary key,
+    `timestamp` datetime,
     `order_shipped` tinyint unsigned,
     `order_confirmed` tinyint unsigned,
     `payment_info` varchar(255),
     `tax_amount` decimal (4, 2),
     `shipping_handling_price` decimal(4, 2),
+    `total_price` decimal(6, 2),
+    `total_items` int,
     `billing_address` varchar(255),
     `shipping_address` varchar(255),
-    `timestamp` datetime,
     `customer_id` int,
     `worker_id` int,
     foreign key(`customer_id`) references `customers`(`id`) on delete cascade,
