@@ -97,3 +97,8 @@ insert into `order_items` (`order_id`, `part_id`, `quantity`) values (3, 146, 2)
 insert into `order_items` (`order_id`, `part_id`, `quantity`) values (3, 147, 7);
 insert into `order_items` (`order_id`, `part_id`, `quantity`) values (3, 148, 16);
 insert into `order_items` (`order_id`, `part_id`, `quantity`) values (3, 149, 168);
+insert into `order_items` (`order_id`, `part_id`, `quantity`) values (4, 96, 1);
+insert into `order_items` (`order_id`, `part_id`, `quantity`) values (4, 114, 2);
+insert into `order_items` (`order_id`, `part_id`, `quantity`) values (4, 17, 7);
+insert into `order_items` (`order_id`, `part_id`, `quantity`) values (4, 18, 16);
+insert into `order_items` (`order_id`, `part_id`, `quantity`) values (4, 129, 168);
