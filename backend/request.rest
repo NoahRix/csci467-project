@@ -78,6 +78,7 @@ Content-Type: application/json
 
 {
     "vendor": "VE001-100",
+    "trans": "",
     "cc": "6011 1234 4321 1234",
     "name": "John Doe",
     "exp": "12/2024",
@@ -121,5 +122,5 @@ POST http://localhost:3001/api/parts/by-part-numbers
 Content-Type: application/json
 
 {
-    "partNumbers": [100,2,3,4,5,6,1000]
+    "partNumbers": [1, 2, 3, 4]
 }

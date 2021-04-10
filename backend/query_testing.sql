@@ -1,4 +1,15 @@
 use `h1gtfw3uuuyktywj`;
+
+use `h1gtfw3uuuyktywj`;
+select * from `orders`;
+
+use `h1gtfw3uuuyktywj`;
+select * from `customers`;
+
+use `h1gtfw3uuuyktywj`;
+delete from `customers`;
+
+use `h1gtfw3uuuyktywj`;
 insert into `inventory` values
 (150, 0),
 (151, 0),
@@ -38,16 +49,15 @@ values ('$2a$10$aMk9VEsdwFZLdW.F7bhkPetkWHfh1nf8Y/eoNBghK8Dd76PadrsmC', 'Jennife
 
 -- =================== Rutvik's Queries ===================--
 -- Hashed passwords added by Noah. All passwords decrypt to 1234.
+
+-- This for customers who are not logged in.
+
 use `h1gtfw3uuuyktywj`;
-
-insert into `customers` (`name`, `address`, `email`, `phone`, `password`) 
-values ('Rutvik Patel', '482 Kindle Rd, DeKalb, IL, 60115', 'rutvik503@gmail.com', '2248069761', '$2a$10$aMk9VEsdwFZLdW.F7bhkPetkWHfh1nf8Y/eoNBghK8Dd76PadrsmC');
-
-insert into `customers` (`name`, `address`, `email`, `phone`, `password`) 
-values ('Hardik Patel', '389 Boty Circle APT 1, Hoffman Estates, IL, 60169', 'hardikpatel123@gmail.com', '8476738923', '$2a$10$aMk9VEsdwFZLdW.F7bhkPetkWHfh1nf8Y/eoNBghK8Dd76PadrsmC');
-
-insert into `customers` (`name`, `address`, `email`, `phone`, `password`) 
-values ('Kavan Patel', '5729 Anibleed Rd, Elgin, IL, 60120', 'kvn195@gmail.com', '2249021100', '$2a$10$aMk9VEsdwFZLdW.F7bhkPetkWHfh1nf8Y/eoNBghK8Dd76PadrsmC');
+insert into `customers` (`name`, `address`, `email`, `phone`, `password`) values 
+('anonymous', 'Street', 'email@email.com', '5555555555', '$2a$10$aMk9VEsdwFZLdW.F7bhkPetkWHfh1nf8Y/eoNBghK8Dd76PadrsmC'),
+('Rutvik Patel', '482 Kindle Rd, DeKalb, IL, 60115', 'rutvik503@gmail.com', '2248069761', '$2a$10$aMk9VEsdwFZLdW.F7bhkPetkWHfh1nf8Y/eoNBghK8Dd76PadrsmC'),
+('Hardik Patel', '389 Boty Circle APT 1, Hoffman Estates, IL, 60169', 'hardikpatel123@gmail.com', '8476738923', '$2a$10$aMk9VEsdwFZLdW.F7bhkPetkWHfh1nf8Y/eoNBghK8Dd76PadrsmC'),
+('Kavan Patel', '5729 Anibleed Rd, Elgin, IL, 60120', 'kvn195@gmail.com', '2249021100', '$2a$10$aMk9VEsdwFZLdW.F7bhkPetkWHfh1nf8Y/eoNBghK8Dd76PadrsmC');
 
 update `customers` 
 set `name` = "Rutvik S Patel", 
@@ -77,28 +87,24 @@ insert into `orders` (`order_shipped`, `order_confirmed`, `payment_info`, `tax_a
 values(1, 1, 'Paid by credit card ending in 3945', 7.25, 5.99, '430 russell rd apt 5', '430 russell rd apt 5', '2021-04-03 00:03:05', 1, 1, 857.44, 54);
 
 --=================== Rutvik's Queries ===================--
-insert into `shipping_information` (`type`, `cost`) values ('Free', 0);
-insert into `shipping_information` (`type`, `cost`) values ('Economy', 5.99);
-insert into `shipping_information` (`type`, `cost`) values ('Premium', 9.99);
-insert into `shipping_information` (`type`, `cost`) values ('Industrial', 99.99);
-insert into `shipping_information` (`type`, `cost`) values ('Commercial', 499.99);
+insert into `shipping_information` (`type`, `cost`) values ('Free', 0),
+('Economy', 5.99);
+('Premium', 9.99);
+('Industrial', 99.99);
+('Commercial', 499.99);
 
 -------------------------------------------------------------
 
-insert into `order_items` (`order_id`, `part_id`, `quantity`) values (1, 1, 1);
-insert into `order_items` (`order_id`, `part_id`, `quantity`) values (1, 2, 2);
-insert into `order_items` (`order_id`, `part_id`, `quantity`) values (1, 3, 5);
-insert into `order_items` (`order_id`, `part_id`, `quantity`) values (1, 4, 37);
-insert into `order_items` (`order_id`, `part_id`, `quantity`) values (2, 106, 3);
-insert into `order_items` (`order_id`, `part_id`, `quantity`) values (2, 107, 9);
-insert into `order_items` (`order_id`, `part_id`, `quantity`) values (2, 108, 10);
-insert into `order_items` (`order_id`, `part_id`, `quantity`) values (3, 145, 1);
-insert into `order_items` (`order_id`, `part_id`, `quantity`) values (3, 146, 2);
-insert into `order_items` (`order_id`, `part_id`, `quantity`) values (3, 147, 7);
-insert into `order_items` (`order_id`, `part_id`, `quantity`) values (3, 148, 16);
-insert into `order_items` (`order_id`, `part_id`, `quantity`) values (3, 149, 168);
-insert into `order_items` (`order_id`, `part_id`, `quantity`) values (4, 96, 1);
-insert into `order_items` (`order_id`, `part_id`, `quantity`) values (4, 114, 2);
-insert into `order_items` (`order_id`, `part_id`, `quantity`) values (4, 17, 7);
-insert into `order_items` (`order_id`, `part_id`, `quantity`) values (4, 18, 16);
-insert into `order_items` (`order_id`, `part_id`, `quantity`) values (4, 129, 168);
+insert into `order_items` (`order_id`, `part_id`, `quantity`) values 
+(1, 1, 1),
+(1, 2, 2),
+(1, 3, 5),
+(1, 4, 37),
+(2, 106, 3),
+(2, 107, 9),
+(2, 108, 10),
+(3, 145, 1),
+(3, 146, 2),
+(3, 147, 7),
+(3, 148, 16),
+(3, 149, 168);
