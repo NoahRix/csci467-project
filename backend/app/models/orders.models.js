@@ -5,7 +5,19 @@ exports.allOrders = result => {
 }
 
 exports.addOrder = (order, result) => {
-    db_tools.execute('insert into orders (order_shipped, order_confirmed, order_recieved, payment_info, tax_rate, shipping_handling_price, billing_address, shipping_address, timestamp, customer_id, worker_id) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
+    db_tools.execute(`insert into orders (
+                        order_shipped, 
+                        order_confirmed, 
+                        payment_info, 
+                        tax_rate, 
+                        shipping_handling_price, 
+                        billing_address, 
+                        shipping_address, 
+                        timestamp, 
+                        customer_id, 
+                        worker_id
+                    ) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+                    select last_insert_id();`, 
         result, 
         [
             order.order_shipped,
