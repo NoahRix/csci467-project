@@ -1,21 +1,17 @@
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import {
     Button,
-    Table,
-    TableContainer,
-    TableRow,
-    TableHead,
-    TableCell,
-    TableBody,
     Grid,
     Paper,
     Select,
     MenuItem,
     TextField,
 } from "@material-ui/core";
+import { DataGrid } from "@material-ui/data-grid";
+import { AuthContext } from '../utils/AuthContext';
 
 const useStyles = makeStyles(() => ({
     formContainer: {
@@ -27,39 +23,48 @@ const useStyles = makeStyles(() => ({
         padding: "auto",
     },
     cellCustom: {
+        display: "flex",
+        flexDirection: "column",      
         textAlign: "center",
+        width: "100%",
     },
     paymentFormItem: {
         padding: "15px",
         display: "flex",
-        flexDirection: "row"
+        flexDirection: "row",
     },
     paymentFormItemInner: {
-        margin: "auto"
-    }
-
+        margin: "auto",
+    },
 }));
 
 const formatUSD = (amount) => {
-    return amount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return Number(amount.toFixed(2)).toLocaleString();
 };
 
 export default function ShoppingCart() {
-    //const { shoppingCartContents } = useContext(AuthContext);
+    const { id, isCustomerAuthed } = useContext(AuthContext);
 
     //Styles
     const classes = useStyles();
 
     const [parts, setParts] = useState([]);
+    const [shippingInformation, setShippingInformation] = useState([]);
     const [shippingOption, setShippingOption] = useState(0.0);
     const [totalPartsPrice, setTotalPartsPrice] = useState(0.12345667);
+    const [taxAmount, setTaxAmount] = useState(0.0075);
+    const [totalItems, setTotalItems] = useState(0);
     const [totalPrice, setTotalPrice] = useState(0.0);
     const [name, setName] = useState("");
     const [CCNumber, setCCNumber] = useState("");
     const [expireDate, setExpireDate] = useState("");
+    const [billingAddress, setBillingAddress] = useState("");
+    const [shippingAddress, setShippingAddress] = useState("");
     const [nameError, setNameError] = useState(false);
     const [CCNumberError, setCCNumberError] = useState(false);
     const [expireDateError, setExpireDateError] = useState(false);
+    const [billingAddressError, setBillingAddressError] = useState(false);
+    const [shippingAddressError, setShippingAddressError] = useState(false);
 
     // Test data for the shopping cart contents.
     const [shoppingCartContents, setShoppingCartContents] = useState([
@@ -70,14 +75,6 @@ export default function ShoppingCart() {
         { number: 5, quantity: 31 },
     ]);
 
-    // Some test shipping standards
-    const [shippingInformation, setShippingInformation] = useState([
-        { type: "Free", cost: 0.0 },
-        { type: "Economy", cost: 5.0 },
-        { type: "Premium", cost: 10.0 },
-        { type: "Industrial", cost: 100.0 },
-        { type: "Commercial", cost: 450.0 },
-    ]);
 
     // To help with updating the quantities.
     let quantities = [];
@@ -100,6 +97,8 @@ export default function ShoppingCart() {
         setNameError(name === "");
         setCCNumberError(CCNumber === "");
         setExpireDateError(expireDate === "");
+        setBillingAddressError(billingAddress === "");
+        setShippingAddressError(shippingAddress === "");
 
         // Make a request for the credit card service.
         axios({
@@ -119,6 +118,41 @@ export default function ShoppingCart() {
         });
     };
 
+    const handleStoreOrderItems = () => {
+
+        let now = new Date(Date.now()).toISOString().slice(0, 19).replace('T', ' ');
+
+        console.log("customer_id: " + id)
+
+        // Create a new order row.
+        let order_row = {
+            timestamp: now,
+            order_shipped: 0,
+            order_confirmed: 0,
+            payment_info: name + " " + CCNumber + " " + expireDate,
+            tax_amount: taxAmount,      // DISPLAY THIS
+            shipping_handling_price: shippingOption,
+            total_price: totalPrice,
+            total_items: totalItems,
+            billing_address: billingAddress,
+            shipping_address: shippingAddress,
+            customer_id: isCustomerAuthed !== null ? id : 50,
+            worker_id: 1
+        };
+
+        axios({
+            method: "post",
+            url: "http://localhost:3001/api/orders/add",
+            data: order_row
+        }).then(res => {
+            console.log("order_info");
+            console.log(res.data);
+        });
+
+        console.log("order_row");
+        console.log(order_row);
+    }
+
     // This updates the quantity values when ever the user changes a quantity from a row.
     const handleQuantityChange = (e, index) => {
         quantities[index] = e.target.value;
@@ -133,7 +167,7 @@ export default function ShoppingCart() {
     // On page load, get all of the parts info from the shopping cart contents.
     // Array construction occurs to solve this problem.
     useEffect(() => {
-        console.log("lol");
+        console.log("NEW")
         axios({
             method: "post",
             url: "http://localhost:3001/api/parts/by-part-numbers",
@@ -141,12 +175,14 @@ export default function ShoppingCart() {
                 partNumbers: shoppingCartContents.map((item) => item.number),
             },
         }).then((res) => {
+            console.log(res.data);
             // Prepare the new array to map on the DOM.
             let parts_temp = [];
 
             // Stitch the quantities to the new array.
             res.data.forEach((item, index) => {
                 parts_temp[index] = {
+                    id: index,
                     ...item,
                     quantity: shoppingCartContents[index].quantity,
                 };
@@ -156,15 +192,24 @@ export default function ShoppingCart() {
         });
     }, [shoppingCartContents]);
 
+    //useEffect(() => {
+    //    axios({
+    //        method
+    //    });
+    //}, [shippingInformation, setShippingInformation])
+
     // Sum up the total parts price of the shopping cart.
     useEffect(() => {
         let total_parts_price = 0.0;
+        let total_items = 0;
 
         parts.forEach((part) => {
             total_parts_price += part.quantity * part.price;
+            total_items += part.quantity;
         });
 
         setTotalPartsPrice(total_parts_price);
+        setTotalItems(total_items);
     }, [parts]);
 
     // Get the total price.
@@ -172,86 +217,104 @@ export default function ShoppingCart() {
         setTotalPrice(totalPartsPrice + shippingOption);
     }, [totalPartsPrice, shippingOption]);
 
+    const ImageFrame = ({ url }) => {
+        return (
+            <>
+                {url === "http://blitz.cs.niu.edu/pics/wip.jpg" ? (
+                    <div
+                        style={{
+                            overflow: "hidden",
+                            width: "72px",
+                            height: "54px",
+                            border: "0.75px solid black",
+                            scale: "1.39",
+                            marginLeft: "14px",
+                        }}
+                    >
+                        <img alt="/" height="75px" src={url} />
+                    </div>
+                ) : (
+                    <img
+                        style={{ border: "1px solid black" }}
+                        alt="/"
+                        height="75px"
+                        src={url}
+                    />
+                )}
+            </>
+        );
+    };
+
+    const columns = [
+        {
+            field: "id",
+            headerName: "Item Group",
+            width: 130,
+            renderCell: (params) => (
+                <div className={classes.cellCustom}>{params.row.id}</div>
+            ),
+        },
+        {
+            field: "pictureURL",
+            headerName: "Image",
+            width: 130,
+            renderCell: (params) => <ImageFrame url={params.row.pictureURL} />,
+        },
+        {
+            field: "number",
+            headerName: "Part Number",
+            width: 135,
+            renderCell: (params) => (
+                <div className={classes.cellCustom}>{params.row.number}</div>
+            ),
+        },
+        { 
+            field: "price", 
+            headerName: "Unit Price", 
+            width: 130,
+            renderCell: (params) => (
+                <div className={classes.cellCustom}>{params.row.price}</div>
+            ), 
+        },
+        {
+            field: "quantity",
+            headerName: "Quantity",
+            width: 120,
+            renderCell: (params) => (
+                <div className={classes.cellCustom}>
+                    <TextField
+                        style={{
+                            width: "90px",
+                        }}
+                        type="number"
+                        value={params.row.quantity}
+                        inputProps={{ min: 0 }}
+                        onChange={(e) => {
+                            console.log(e.target.value);
+                            console.log(params.row.id);
+                            handleQuantityChange(e, params.row.id);
+                        }}
+                    />
+                </div>
+            )
+        }
+    ];
+
     return (
         <div style={{ display: "flex", flexDirection: "column" }}>
             <div style={{ margin: "auto", width: "650px" }}>
-                <TableContainer style={{ marginTop: "15px" }} component={Paper}>
-                    <Table>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell className={classes.cellCustom}>
-                                    <b>Image</b>
-                                </TableCell>
-                                <TableCell className={classes.cellCustom}>
-                                    <b>Part Number</b>
-                                </TableCell>
-                                <TableCell className={classes.cellCustom}>
-                                    <b>Quantity</b>
-                                </TableCell>
-                                <TableCell className={classes.cellCustom}>
-                                    <b>Price Per Unit</b>
-                                </TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {
-                                ((quantities = []),
-                                parts.map(
-                                    (item, index) => (
-                                        quantities.push(item.quantity),
-                                        (
-                                            <TableRow key={index}>
-                                                <TableCell
-                                                    className={
-                                                        classes.cellCustom
-                                                    }
-                                                >
-                                                    <img
-                                                        alt="/"
-                                                        height="75px"
-                                                        src={item.pictureURL}
-                                                    />
-                                                </TableCell>
-                                                <TableCell
-                                                    className={
-                                                        classes.cellCustom
-                                                    }
-                                                >
-                                                    {item.number}
-                                                </TableCell>
-                                                <TableCell
-                                                    className={
-                                                        classes.cellCustom
-                                                    }
-                                                >
-                                                    <TextField
-                                                        style={{
-                                                            width: "90px",
-                                                        }}
-                                                        type="number"
-                                                        value={item.quantity}
-                                                        inputProps={{ min: 0 }}
-                                                        onChange={(e) => {
-                                                            handleQuantityChange(
-                                                                e,
-                                                                index
-                                                            );
-                                                        }}
-                                                    ></TextField>
-                                                </TableCell>
-                                                <TableCell
-                                                    className={
-                                                        classes.cellCustom
-                                                    }
-                                                >{`$${item.price}`}</TableCell>
-                                            </TableRow>
-                                        )
-                                    )
-                                ))
-                            }
-                        </TableBody>
-                    </Table>
-                </TableContainer>
+                <div style={{ width: "100%" }}>
+                    <DataGrid
+                        autoHeight
+                        rowHeight={100}
+                        rows={parts.map((part) => {
+                            quantities.push(part.quantity);
+                            return part;
+                        })}
+                        columns={columns}
+                        pageSize={4}
+                    />
+                </div>
                 <Grid container className={classes.formContainer} spacing={2}>
                     <Grid item xs={4}>
                         <Paper className={classes.formBox}>
@@ -292,9 +355,15 @@ export default function ShoppingCart() {
                         <Paper>
                             <form noValidate autoComplete="off">
                                 <Grid container>
-                                    <Grid className={classes.paymentFormItem} item xs={6}>
+                                    <Grid
+                                        className={classes.paymentFormItem}
+                                        item
+                                        xs={6}
+                                    >
                                         <TextField
-                                            className={classes.paymentFormItemInner}
+                                            className={
+                                                classes.paymentFormItemInner
+                                            }
                                             label="Name"
                                             value={name}
                                             error={nameError}
@@ -303,9 +372,15 @@ export default function ShoppingCart() {
                                             }}
                                         />
                                     </Grid>
-                                    <Grid className={classes.paymentFormItem} item xs={6}>
+                                    <Grid
+                                        className={classes.paymentFormItem}
+                                        item
+                                        xs={6}
+                                    >
                                         <TextField
-                                            className={classes.paymentFormItemInner}
+                                            className={
+                                                classes.paymentFormItemInner
+                                            }
                                             value={CCNumber}
                                             error={CCNumberError}
                                             onChange={(e) => {
@@ -314,9 +389,15 @@ export default function ShoppingCart() {
                                             label="Credit Card Number"
                                         />
                                     </Grid>
-                                    <Grid className={classes.paymentFormItem} item xs={6}>
+                                    <Grid
+                                        className={classes.paymentFormItem}
+                                        item
+                                        xs={6}
+                                    >
                                         <TextField
-                                            className={classes.paymentFormItemInner}
+                                            className={
+                                                classes.paymentFormItemInner
+                                            }
                                             value={expireDate}
                                             error={expireDateError}
                                             onChange={(e) => {
@@ -325,13 +406,76 @@ export default function ShoppingCart() {
                                             label="Expiration Date"
                                         />
                                     </Grid>
-                                    <Grid className={classes.paymentFormItem} item xs={4}>
+                                    <Grid
+                                        className={classes.paymentFormItem}
+                                        item
+                                        xs={6}
+                                    >
+                                        <TextField
+                                            className={
+                                                classes.paymentFormItemInner
+                                            }
+                                            value={billingAddress}
+                                            error={billingAddressError}
+                                            onChange={(e) => {
+                                                setBillingAddress(e.target.value);
+                                            }}
+                                            label="Billing Address"
+                                        />
+                                    </Grid>
+                                    <Grid
+                                        className={classes.paymentFormItem}
+                                        item
+                                        xs={6}
+                                    >
+                                        <TextField
+                                            className={
+                                                classes.paymentFormItemInner
+                                            }
+                                            value={shippingAddress}
+                                            error={shippingAddressError}
+                                            onChange={(e) => {
+                                                setShippingAddress(e.target.value);
+                                            }}
+                                            label="Shipping Address"
+                                        />
+                                    </Grid>
+                                    <Grid
+                                        className={classes.paymentFormItem}
+                                        item
+                                        xs={4}
+                                    >
                                         <Button
-                                            className={classes.paymentFormItemInner} 
-                                            style={{marginLeft: "85px", minWidth: "130px", backgroundColor: "#eee"}}
+                                            className={
+                                                classes.paymentFormItemInner
+                                            }
+                                            style={{
+                                                marginLeft: "85px",
+                                                minWidth: "130px",
+                                                backgroundColor: "#eee",
+                                            }}
                                             onClick={handlePlaceOrder}
                                         >
                                             Place Order
+                                        </Button>
+                                    </Grid>
+                                    <Grid
+                                        className={classes.paymentFormItem}
+                                        item
+                                        xs={4}
+                                    >
+                                        <Button
+                                            className={
+                                                classes.paymentFormItemInner
+                                            }
+                                            style={{
+                                                marginLeft: "85px",
+                                                minWidth: "130px",
+                                                backgroundColor: "#eee",
+                                            }}
+                                            onClick={handleStoreOrderItems}
+                                        >
+                                            Place Order TEST
                                         </Button>
                                     </Grid>
                                 </Grid>
