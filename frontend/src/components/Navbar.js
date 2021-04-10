@@ -1,8 +1,9 @@
-import React, { useContext } from 'react';
-import { AppBar, Toolbar, makeStyles, Button } from '@material-ui/core';
+import React, { useContext, useEffect, useState } from 'react';
+import { AppBar, Toolbar, makeStyles, Button, Typography } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../utils/AuthContext';
 import axios from 'axios';
+import logo from '../images/carLogo.png';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -25,6 +26,7 @@ const useStyles = makeStyles((theme) => ({
     //const [ isCustomerAuthed, setA ] = useState(false);
     const { isAdmin, setIsAdmin, isCustomerAuthed, isEmployeeAuthed, setIsEmployeeAuthed, setIsCustomerAuthed, id } = useContext(AuthContext);
 
+    const [userName, setUserName] = useState("");
     console.log(isCustomerAuthed);
 
     const handleLogout = () => {
@@ -44,10 +46,29 @@ const useStyles = makeStyles((theme) => ({
       });
     }
 
+    useEffect(() => {
+
+      let url = "http://localhost:3001/";
+      if(isCustomerAuthed)
+        url += "api/customers/by-id";
+      if(isEmployeeAuthed)
+        url += "api/workers/by-id";
+
+      axios({
+        method: 'post',
+        url: url,
+        data: {id}
+      }).then(res => {
+        setUserName(res.data[0].name);
+      });
+      
+    }, [isCustomerAuthed, isEmployeeAuthed]);
+
     return (
       <div className={classes.root}>
         <AppBar position="static">
           <Toolbar className={classes.toolBar}>
+          <img src={logo} width="50px" height="50px"/>
             <Button component={Link} to="/" color="inherit"> 1A Project </Button>
             {isCustomerAuthed && <Button component={Link} to="/CustomerOrders" color="inherit">Orders</Button>}
             <Button component={Link} to="/ShoppingCart" color="inherit">Shopping Cart</Button>
@@ -55,7 +76,10 @@ const useStyles = makeStyles((theme) => ({
             {isAdmin && <Button component={Link} to="/ShippingDashboard" color="inherit">Shipping Dashboard</Button>}
             {
               isCustomerAuthed || isEmployeeAuthed ?
+              <>
               <Button onClick={handleLogout} color="inherit">Logout</Button>
+              <Typography>{`Hello ${userName}!`}</Typography>
+              </>
               :
               <Button component={Link} to="/Login"color="inherit">Login</Button>
             }
