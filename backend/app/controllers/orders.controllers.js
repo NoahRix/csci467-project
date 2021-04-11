@@ -35,3 +35,9 @@ exports.orderItems = (req, res) => {
         res.send(data);
     })
 }
+
+exports.addOrderItems = (req, res) => {
+    orders.addOrderItems(req.body, (data) => {
+        res.send(data);
+    })
+}
