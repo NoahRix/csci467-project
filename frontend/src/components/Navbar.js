@@ -54,21 +54,24 @@ const useStyles = makeStyles((theme) => ({
       if(isEmployeeAuthed)
         url += "api/workers/by-id";
 
-      axios({
-        method: 'post',
-        url: url,
-        data: {id}
-      }).then(res => {
-        setUserName(res.data[0].name);
-      });
+      console.log("url: " + url);
+      if(isCustomerAuthed || isEmployeeAuthed) { 
+        axios({
+          method: 'post',
+          url: url,
+          data: {id}
+        }).then(res => {
+          setUserName(res.data[0].name);
+        });
+      }
       
-    }, [isCustomerAuthed, isEmployeeAuthed]);
+    }, [isCustomerAuthed, isEmployeeAuthed, id, setUserName]);
 
     return (
       <div className={classes.root}>
         <AppBar position="static">
           <Toolbar className={classes.toolBar}>
-          <img src={logo} width="50px" height="50px"/>
+          <img src={logo} alt="Logo could not load" width="50px" height="50px"/>
             <Button component={Link} to="/" color="inherit"> 1A Project </Button>
             {isCustomerAuthed && <Button component={Link} to="/CustomerOrders" color="inherit">Orders</Button>}
             <Button component={Link} to="/ShoppingCart" color="inherit">Shopping Cart</Button>

@@ -8,4 +8,5 @@ module.exports = app => {
 
     app.post("/api/orders/ordersOfCustomer", orders.ordersOfCustomer);
     app.post("/api/orders/orderItems", orders.orderItems);
+    app.post("/api/orders/addOrderItems", orders.addOrderItems);
 }

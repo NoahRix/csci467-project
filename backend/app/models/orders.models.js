@@ -10,18 +10,20 @@ exports.ordersOfCustomer = (customerId, result) => {
 
 exports.addOrder = (order, result) => {
     db_tools.execute(`insert into orders (
+                        timestamp, 
                         order_shipped, 
                         order_confirmed, 
                         payment_info, 
-                        tax_rate, 
+                        tax_amount, 
                         shipping_handling_price, 
+                        total_price,
+                        total_items,
                         billing_address, 
                         shipping_address, 
-                        timestamp, 
                         customer_id, 
                         worker_id
-                    ) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
-                    select last_insert_id();`, 
+                    ) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+                    select last_insert_id() as last_id;`, 
         result, 
         [
             order.timestamp,
@@ -35,7 +37,7 @@ exports.addOrder = (order, result) => {
             order.billing_address,
             order.shipping_address,
             order.customer_id,
-            order.worker_id,
+            order.worker_id
         ]
     );
 }
@@ -67,4 +69,23 @@ exports.deleteOrder = (id, result) => {
 
 exports.orderItems = (orderId, result) => {
     db_tools.execute('select * from order_items where order_id = ?', result, [orderId]);
+}
+
+exports.addOrderItems = (orderItems, result) => {
+
+    let sqlStatement = "insert into order_items values "
+    let values = [];
+
+    orderItems.forEach((orderItem, index) => {
+        let insertRow = `(?, ?, ?)` + (index + 1 !== orderItems.length ? ',' : ';');   
+        sqlStatement += insertRow;
+        values.push(orderItem.order_id);
+        values.push(orderItem.part_id);
+        values.push(orderItem.quantity);
+    });
+    
+    console.log(sqlStatement);
+    console.log(values);
+    //result("ITEMS");
+    db_tools.execute(sqlStatement, result, values);
 }
