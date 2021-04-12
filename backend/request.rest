@@ -124,3 +124,12 @@ Content-Type: application/json
 {
     "partNumbers": [1, 2, 3, 4]
 }
+
+###
+
+POST http://localhost:3001/api/orders/orderItems
+Content-Type: application/json
+
+{
+    "orderId": 1
+}
