@@ -5,7 +5,10 @@ module.exports = app => {
     app.post("/api/orders/add", orders.addOrder);
     app.patch("/api/orders/update", orders.updateOrder);
     app.delete("/api/orders/delete", orders.deleteOrder);
+    app.post("/api/orders/cancel", orders.cancelOrder);
+    app.post("/api/orders/ship", orders.shipOrder);
 
     app.post("/api/orders/ordersOfCustomer", orders.ordersOfCustomer);
     app.post("/api/orders/orderItems", orders.orderItems);
+    app.post("/api/orders/orderItemsJoined", orders.orderItemsJoined);
 }
