@@ -49,10 +49,10 @@ export default function ShoppingCart() {
     const classes = useStyles();
 
     const [parts, setParts] = useState([]);
-    const [shippingInformation, setShippingInformation] = useState([]);
+    const [shippingInformation] = useState([]);
     const [shippingOption, setShippingOption] = useState(0.0);
     const [totalPartsPrice, setTotalPartsPrice] = useState(0.12345667);
-    const [taxAmount, setTaxAmount] = useState(0.0075);
+    const [taxAmount] = useState(0.0075);
     const [totalItems, setTotalItems] = useState(0);
     const [totalPrice, setTotalPrice] = useState(0.0);
     const [name, setName] = useState("");
@@ -67,7 +67,7 @@ export default function ShoppingCart() {
     const [shippingAddressError, setShippingAddressError] = useState(false);
 
     // Test data for the shopping cart contents.
-    const [shoppingCartContents, setShoppingCartContents] = useState([
+    const [shoppingCartContents] = useState([
         { number: 1, quantity: 3 },
         { number: 2, quantity: 10 },
         { number: 3, quantity: 12 },
