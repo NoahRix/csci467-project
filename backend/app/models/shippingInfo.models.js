@@ -17,3 +17,20 @@ exports.updateShippingInfo = (info, result) => {
         ]
     );
 }
+
+exports.addShippingRecord = (info, result) => {
+    db_tools.execute('insert into shipping_information (type, cost) values ( ?, ? )',
+    result,
+    [
+        info.type,
+        info.cost,
+    ]);
+}
+
+exports.deleteShippingRecord = (info, result) => {
+    db_tools.execute('delete from shipping_information where type = ?',
+    result,
+    [
+        info.type,
+    ]);
+}
