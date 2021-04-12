@@ -17,3 +17,15 @@ exports.updateShippingInfo = (req, res) => {
         res.send(data);
     })
 }
+
+exports.addShippingRecord = (req, res) => {
+    shippingInfo.addShippingRecord( req.body, data => {
+        res.send(data);
+    })
+}
+
+exports.deleteShippingRecord = (req, res) => {
+    shippingInfo.deleteShippingRecord( req.body, data => {
+        res.send(data);
+    })
+}

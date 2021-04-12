@@ -26,7 +26,6 @@ exports.updateOrder = (req, res) => {
 }
 
 exports.deleteOrder = (req, res) => {
-    console.log(req.body);
     orders.deleteOrder(req.body.id, (data) => {
         res.send(data);
     })
@@ -77,13 +76,18 @@ exports.orderItemsJoined = async (req, res) => {
     order_parts.sort((a, b) => a.number < b.number);
     order_items.sort((a, b) => a.part_id < b.part_id);
 
-    console.log(order_parts);
-    console.log(order_items);
+    //console.log(order_parts);
+    //console.log(order_items);
 
     order_parts = order_parts.map((order_part, index) => {
-        
         return {...order_part, quantity: order_items[index].quantity}
     })
 
     res.send(order_parts);
+}
+
+exports.addOrderItems = (req, res) => {
+    orders.addOrderItems(req.body, (data) => {
+        res.send(data);
+    });
 }

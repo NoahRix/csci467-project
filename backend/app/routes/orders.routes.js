@@ -11,4 +11,5 @@ module.exports = app => {
     app.post("/api/orders/ordersOfCustomer", orders.ordersOfCustomer);
     app.post("/api/orders/orderItems", orders.orderItems);
     app.post("/api/orders/orderItemsJoined", orders.orderItemsJoined);
+    app.post("/api/orders/addOrderItems", orders.addOrderItems);
 }
