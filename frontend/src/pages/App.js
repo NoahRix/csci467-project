@@ -113,7 +113,7 @@ function App() {
             <Route exact path="/ShoppingCart" component={ShoppingCart}/>
             <CustomerProtectedRoute exact path="/CustomerOrders" component={CustomerOrders}/>
             <EmployeeProtectedRoute exact path="/InventoryDashboard" component={InventoryDashboard}/>
-            <CustomerProtectedRoute exact path="/OrdersDashboard" component={OrdersDashboard}/>
+            <EmployeeProtectedRoute exact path="/OrdersDashboard" component={OrdersDashboard}/>
             <AdminProtectedRoute exact path="/ShippingDashboard" component={ShippingDashboard}/>
             <Footer/>
           </AuthContext.Provider>
