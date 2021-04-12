@@ -59,7 +59,10 @@ const useStyles = makeStyles((theme) => ({
         url: url,
         data: {id}
       }).then(res => {
-        setUserName(res.data[0].name);
+        if(res.data[0])
+          setUserName(res.data[0].name);
+        else
+          setUserName("ERROR!");
       });
       
     }, [isCustomerAuthed, isEmployeeAuthed]);
