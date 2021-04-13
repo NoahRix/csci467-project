@@ -37,7 +37,7 @@ create table `orders`(
     `order_confirmed` tinyint unsigned,
     `payment_info` varchar(255),
     `tax_amount` decimal (10, 2),
-    `shipping_handling_price` decimal(4, 2),
+    `shipping_handling_price` decimal(10, 2),
     `total_price` decimal(10, 2),
     `total_items` int,
     `billing_address` varchar(255),
