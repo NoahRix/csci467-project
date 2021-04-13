@@ -1,11 +1,16 @@
 
 ###
-POST http://localhost:3001/api/inventory/update
+GET http://localhost:3001/api/test/test
 Content-Type: application/json
 
 {
-    "quantity": 100,
-    "part_id": 1
+}
+
+###
+GET https://randomuser.me/api/
+Authorization: application/json
+
+{
 }
 
 ###
