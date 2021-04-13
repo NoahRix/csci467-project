@@ -66,10 +66,25 @@ exports.weightRange = (req, res) => {
     }, req.body);
 }
 
-exports.test = (req, res) => {
-    parts.test(data => {
-        res.send(data);
-    })
+exports.test = async (req, res) => {
+
+    let part_numbers = [];
+    
+    let  get_part_numbers = new Promise(resolve => {
+        parts.allParts(data => {
+            part_numbers = 
+            data.map(part => part.number)
+            .filter(() => Math.floor(Math.random() * 10) === 1 )
+            .map(part_number => {return {number: part_number, quantity: Math.floor(Math.random() * 100)}});
+            resolve();
+        })
+    });
+
+    await get_part_numbers;
+
+
+
+    res.send(part_numbers);
 }
 
 /**
