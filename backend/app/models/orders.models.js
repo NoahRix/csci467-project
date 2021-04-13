@@ -68,12 +68,12 @@ exports.deleteOrder = (id, result) => {
     db_tools.execute('delete from orders where id = ?', result, [id]);
 }
 
-exports.cancelOrder = (info, result) => {
-    db_tools.execute('update orders set order_confirmed = ? where id = ?', result, [info.confirmed, info.id]);
+exports.confirmOrder = (id, result) => {
+    db_tools.execute('update orders set order_confirmed = 1 where id = ?', result, [id]);
 }
 
-exports.shipOrder = (info, result) => {
-    db_tools.execute('update orders set order_shipped = ? where id = ?', result, [info.shipped, info.id]);
+exports.shipOrder = (id, result) => {
+    db_tools.execute('update orders set order_shipped = 1 where id = ?', result, [id]);
 }
 
 exports.orderItems = (orderId, result) => {
