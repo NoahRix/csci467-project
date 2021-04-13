@@ -15,18 +15,23 @@ import {
     IconButton,
     Collapse,
     Box,
+    Tooltip
 } from "@material-ui/core";
 import {
     KeyboardArrowDown,
     KeyboardArrowUp,
     Delete,
+    Check,
     LocalShipping,
-    NotInterested
 } from "@material-ui/icons";
 import ImageFrame from "../components/ImageFrame";
 import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles(() => ({
+    root: {
+        width: "800px",
+        margin: "auto"
+    },
     cellCustom: {
         display: "flex",
         flexDirection: "column",
@@ -34,6 +39,11 @@ const useStyles = makeStyles(() => ({
     },
     center: {
         marginLeft: "10px"
+    },
+    flexRow: {
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "center"
     }
 }));
 
@@ -54,22 +64,41 @@ function Row({ row, updateOrders }) {
         axios({
             method: "delete",
             url: "http://localhost:3001/api/orders/delete",
-            data: {id: row.id}
+            data: {id}
         }).then(res => {
             console.log(res.data);
             updateOrders();
         }).catch(err => {
             console.log(err);
         });
-
     }
 
     const handleShipOrder = (id) => {
-        console.log("SHIP: " + id);
+        axios({
+            method: "post",
+            url: "http://localhost:3001/api/orders/ship",
+            data: {id}
+        }).then(res => {
+            console.log(res.data);
+            updateOrders();
+        }).catch(err => {
+            console.log(err);
+        });
     }
 
-    const handleCancelOrder = (id) => {
-        console.log("CANCEL: " + id);
+    const handleConfirmOrder = (id) => {
+        console.log("CONFIRM: " + id);
+
+        axios({
+            method: "post",
+            url: "http://localhost:3001/api/orders/confirm",
+            data: {id}
+        }).then(res => {
+            console.log(res.data);
+            updateOrders();
+        }).catch(err => {
+            console.log(err);
+        });
     }   
 
     useEffect(() => {
@@ -98,6 +127,7 @@ function Row({ row, updateOrders }) {
                         {open ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
                     </IconButton>
                 </TableCell>
+                <TableCell align="center">{row.customer_name}</TableCell>
                 <TableCell align="center">{row.id}</TableCell>
                 <TableCell align="center">
                     {row.order_shipped === 1 && <Typography>Shipped</Typography>}
@@ -112,9 +142,21 @@ function Row({ row, updateOrders }) {
                     {formatUSD(row.total_price)}
                 </TableCell>
                 <TableCell align="center">
-                    <IconButton onClick={() => {handleDeleteOrder(row.id)}}><Delete/></IconButton>
-                    <IconButton onClick={() => {handleShipOrder(row.id)}}><LocalShipping/></IconButton>
-                    <IconButton onClick={() => {handleCancelOrder(row.id)}}><NotInterested/></IconButton>
+                    <Tooltip title="Delete">                        
+                        <IconButton onClick={() => {handleDeleteOrder(row.id)}}><Delete/></IconButton>
+                    </Tooltip>
+                    {
+                        (row.order_confirmed === 1 && row.order_shipped === 0) &&
+                        <Tooltip title="Ship">                        
+                            <IconButton onClick={() => {handleShipOrder(row.id)}}><LocalShipping/></IconButton>
+                        </Tooltip>
+                    }
+                    {
+                        row.order_confirmed === 0 &&
+                        <Tooltip title="Confirm">                        
+                            <IconButton onClick={() => {handleConfirmOrder(row.id)}}><Check/></IconButton>
+                        </Tooltip>
+                    }
                 </TableCell>
             </TableRow>
             <TableRow>
@@ -191,8 +233,9 @@ export default function OrdersDashboard() {
     const [tabValue, setTabValue] = useState(0);
     const [allOrders, setAllOrders] = useState([]);
     const [orders, setOrders] = useState([]);
-    const [page, setPage] = React.useState(0);
-    const [rowsPerPage, setRowsPerPage] = React.useState(10);
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
+    const [sortFlag, setSortFlag] = useState(0b00000000);
   
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -208,11 +251,39 @@ export default function OrdersDashboard() {
 
         axios({
             method: "get",
-            url: "http://localhost:3001/api/orders/all",
+            url: "http://localhost:3001/api/orders/allWithNames",
         }).then((res) => {
             console.log(res.data);
             setAllOrders(res.data);
+        }).catch(err => {
+            console.log(err);
         });
+    }
+
+    const compare = (alpha, beta) => {
+        
+        let ret_val;
+    
+        switch(sortFlag){
+            
+            case 0b00000001:
+                return alpha.customer_name > beta.customer_name;  
+            case 0b00000010:
+                return alpha.customer_name < beta.customer_name;  
+            case 0b00000100:
+                return alpha.id < beta.id;  
+            case 0b00001000:
+                return alpha.id > beta.id;  
+            case 0b00010000:
+                return alpha.total_price < beta.total_price;  
+            case 0b00100000:
+                return alpha.total_price > beta.total_price;  
+
+            default:
+                break;
+        }
+        
+        return ret_val;
     }
 
     useEffect(() => {
@@ -222,6 +293,8 @@ export default function OrdersDashboard() {
     useEffect(() => {
         console.log(tabValue);
         
+        setPage(0);
+
         switch(tabValue){
             case 0:
                 setOrders(allOrders.filter(order => order.order_shipped === 0 && order.order_confirmed === 1));
@@ -242,6 +315,19 @@ export default function OrdersDashboard() {
     
     }, [tabValue, allOrders]);
 
+    const SortButton = (alpha, beta) => {
+        return (
+            <IconButton onClick={() => {setSortFlag(sortFlag === alpha ? beta : alpha )}}>
+                {
+                    sortFlag === alpha ?
+                    <KeyboardArrowUp/>
+                    :
+                    <KeyboardArrowDown/>
+                }
+            </IconButton>
+        );
+    }
+
     return (
         <div>
             <Tabs centered value={tabValue} onChange={(e, value) => setTabValue(value)}>
@@ -256,18 +342,34 @@ export default function OrdersDashboard() {
                         <TableHead>
                             <TableRow>
                                 <TableCell />
-                                <TableCell align="center">Order ID</TableCell>
                                 <TableCell align="center">
-                                    Order Status
+                                    <div className={classes.flexRow}>
+                                        {SortButton(0b00000001, 0b00000010)}
+                                        <Typography>Customer</Typography>
+                                    </div>
                                 </TableCell>
                                 <TableCell align="center">
-                                    Total Price
+                                    <div className={classes.flexRow}>
+                                        {SortButton(0b00000100, 0b00001000)}
+                                        <Typography>Order ID</Typography>
+                                    </div>
                                 </TableCell>
-                                <TableCell align="center">Action</TableCell>
+                                <TableCell align="center">
+                                    <Typography>Order Status</Typography>
+                                </TableCell>
+                                <TableCell align="center">
+                                    <div className={classes.flexRow}>
+                                        {SortButton(0b00010000, 0b00100000)}
+                                        <Typography>Total Price</Typography>
+                                    </div>
+                                </TableCell>
+                                <TableCell align="center">
+                                    <Typography>Action</Typography>
+                                </TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {orders.map((order, index) => (
+                            {orders.sort(compare).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((order, index) => (
                                 <Row key={index} row={order} updateOrders={updateOrders} />
                             ))}
                         </TableBody>
