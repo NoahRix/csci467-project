@@ -30,6 +30,7 @@ const useStyles = makeStyles(() => ({
         flexDirection: "column",
         textAlign: "center",
         width: "100%",
+        wordWrap: "break-word"
     },
     paymentFormItem: {
         padding: "15px",
@@ -74,13 +75,7 @@ export default function ShoppingCart(props) {
     const [orderRecieved, setOrderRecieved] = useState(false);
 
     // Test data for the shopping cart contents.
-    const [shoppingCartContents, setShoppingCartContents] = useState([
-        { number: 1, quantity: 3 },
-        { number: 2, quantity: 10 },
-        { number: 3, quantity: 12 },
-        { number: 4, quantity: 34 },
-        { number: 5, quantity: 31 },
-    ]);
+    const [shoppingCartContents, setShoppingCartContents] = useState([]);
 
     // To help with updating the quantities.
     let quantities = [];
@@ -133,7 +128,7 @@ export default function ShoppingCart(props) {
             order_shipped: 0,
             order_confirmed: 0,
             payment_info: name + " " + CCNumber + " " + expireDate,
-            tax_amount: taxAmount, // DISPLAY THIS
+            tax_amount: taxAmount.toFixed(2),
             shipping_handling_price: shippingOption,
             total_price: totalPrice,
             total_items: totalItems,
@@ -156,6 +151,8 @@ export default function ShoppingCart(props) {
                 console.log(res.data);
                 last_order_id = res.data[1][0].last_id;
                 resolve();
+            }).catch(err => {
+                console.log(err);
             });
         });
 
@@ -210,6 +207,47 @@ export default function ShoppingCart(props) {
         );
     };
 
+    // Make a random shopping cart
+    useEffect(() => {
+        axios({
+            method: 'get',
+            url: 'http://localhost:3001/api/test/test'
+        }).then(res => {
+            setShoppingCartContents(res.data);
+        })
+        .catch(err => {
+            console.log(err);
+        });
+    }, [setShoppingCartContents])
+
+    // Get a random name and address.
+    useEffect(() => {
+        if(true){
+            axios({
+                    method: 'get',
+                    url: 'https://randomuser.me/api/'
+                }).then(res => {
+                    console.log(res.data.results[0].name);
+                    console.log(res.data.results[0].location);
+                    let name = res.data.results[0].name.first + " " + res.data.results[0].name.last 
+                    let address = 
+                    res.data.results[0].location.street.name + " " + 
+                    res.data.results[0].location.street.number + " " + 
+                    res.data.results[0].location.city + " " + 
+                    res.data.results[0].location.country + " ";
+                    
+                    setName(name);
+                    setShippingAddress(address);
+                    setBillingAddress(address);
+                    setCCNumber("6011 1234 4321 1234");
+                    setExpireDate("12/2024");
+                })
+                .catch(err => {
+                    console.log(err);
+            });
+        }
+    }, [setName, setShippingAddress, setBillingAddress, setCCNumber.apply, setExpireDate]);
+
     // On page load, get all of the parts info from the shopping cart contents.
     // Array construction occurs to solve this problem.
     useEffect(() => {
@@ -224,7 +262,7 @@ export default function ShoppingCart(props) {
                     ),
                 },
             }).then((res) => {
-                console.log(res.data);
+
                 // Prepare the new array to map on the DOM.
                 let parts_temp = [];
 
@@ -324,7 +362,7 @@ export default function ShoppingCart(props) {
         {
             field: "pictureURL",
             headerName: "Image",
-            width: 130,
+            width: 125,
             renderCell: (params) => <ImageFrame url={params.row.pictureURL} />,
         },
         {
@@ -333,6 +371,14 @@ export default function ShoppingCart(props) {
             width: 135,
             renderCell: (params) => (
                 <div className={classes.cellCustom}>{params.row.number}</div>
+            ),
+        },
+        {
+            field: "description",
+            headerName: "Part Description",
+            width: 155,
+            renderCell: (params) => (
+                <div className={classes.cellCustom}>{params.row.description}</div>
             ),
         },
         {
@@ -404,7 +450,7 @@ export default function ShoppingCart(props) {
                     </Paper>
                 </div>
             ) : (
-                <div style={{ margin: "auto", width: "650px" }}>
+                <div style={{ margin: "auto", width: "800px" }}>
                     <div style={{ width: "100%" }}>
                         <DataGrid
                             autoHeight
@@ -414,7 +460,7 @@ export default function ShoppingCart(props) {
                                 return part;
                             })}
                             columns={columns}
-                            pageSize={4}
+                            pageSize={5}
                         />
                     </div>
                     <Grid
@@ -566,7 +612,7 @@ export default function ShoppingCart(props) {
                                                     classes.paymentFormItemInner
                                                 }
                                                 style={{
-                                                    marginLeft: "85px",
+                                                    marginLeft: "123px",
                                                     minWidth: "130px",
                                                     backgroundColor: "#eee",
                                                 }}

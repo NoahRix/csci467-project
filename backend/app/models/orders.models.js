@@ -9,6 +9,7 @@ exports.ordersOfCustomer = (customerId, result) => {
 }
 
 exports.addOrder = (order, result) => {
+    console.log(order);
     db_tools.execute(`insert into orders (
                         timestamp, 
                         order_shipped, 
@@ -65,6 +66,14 @@ exports.updateOrder = (order, result) => {
 
 exports.deleteOrder = (id, result) => {
     db_tools.execute('delete from orders where id = ?', result, [id]);
+}
+
+exports.confirmOrder = (id, result) => {
+    db_tools.execute('update orders set order_confirmed = 1 where id = ?', result, [id]);
+}
+
+exports.shipOrder = (id, result) => {
+    db_tools.execute('update orders set order_shipped = 1 where id = ?', result, [id]);
 }
 
 exports.orderItems = (orderId, result) => {
