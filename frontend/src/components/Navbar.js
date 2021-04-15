@@ -41,12 +41,8 @@ export default function Navbar() {
     } = useContext(AuthContext);
 
     const [userName, setUserName] = useState("");
-    console.log(isCustomerAuthed);
 
     const handleLogout = () => {
-        console.log("logging out");
-        console.log("id: " + id);
-
         setIsCustomerAuthed(false);
         setIsEmployeeAuthed(false);
         setIsAdmin(false);
@@ -57,7 +53,7 @@ export default function Navbar() {
             data: { id },
         }).then((res) => {
             console.log(res.data);
-        });
+        }).catch(err => console.log(err));
     };
 
     useEffect(() => {
@@ -65,16 +61,15 @@ export default function Navbar() {
         if (isCustomerAuthed) url += "api/customers/by-id";
         if (isEmployeeAuthed) url += "api/workers/by-id";
 
-        console.log("url: " + url);
         if (isCustomerAuthed || isEmployeeAuthed) {
             axios({
                 method: "post",
                 url: url,
                 data: { id },
             }).then((res) => {
-              if (res.data[0]) setUserName(res.data[0].name);
-              setUserName(res.data[0].name);
-            });
+                if (res.data[0]) setUserName(res.data[0].name);
+                else setUserName("");
+            }).catch(err => console.log(err));
         }
     }, [isCustomerAuthed, isEmployeeAuthed, id, setUserName]);
 
