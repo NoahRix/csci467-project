@@ -42,6 +42,8 @@ create table `orders`(
     `total_items` int,
     `billing_address` varchar(255),
     `shipping_address` varchar(255),
+    `shipping_email` varchar(255),
+    `shipping_name` varchar(255),
     `customer_id` int,
     `worker_id` int,
     foreign key(`customer_id`) references `customers`(`id`) on delete cascade,
