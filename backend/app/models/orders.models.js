@@ -21,9 +21,11 @@ exports.addOrder = (order, result) => {
                         total_items,
                         billing_address, 
                         shipping_address, 
+                        shipping_email, 
+                        shipping_name, 
                         customer_id, 
                         worker_id
-                    ) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+                    ) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
                     select last_insert_id() as last_id;`, 
         result, 
         [
@@ -37,6 +39,8 @@ exports.addOrder = (order, result) => {
             order.total_items,
             order.billing_address,
             order.shipping_address,
+            order.shipping_email,
+            order.shipping_name,
             order.customer_id,
             order.worker_id
         ]
@@ -44,7 +48,22 @@ exports.addOrder = (order, result) => {
 }
 
 exports.updateOrder = (order, result) => {
-    db_tools.execute('UPDATE orders SET timestamp = ?, order_shipped = ?, order_confirmed = ?, payment_info = ?, tax_amount = ?, shipping_handling_price = ?, total_price = ?, total_items = ?, billing_address = ?, shipping_address = ?, customer_id = ?, worker_id = ? where id = ?', 
+    db_tools.execute(`UPDATE orders SET 
+                        timestamp = ?, 
+                        order_shipped = ?, 
+                        order_confirmed = ?, 
+                        payment_info = ?, 
+                        tax_amount = ?, 
+                        shipping_handling_price = ?, 
+                        total_price = ?, 
+                        total_items = ?, 
+                        billing_address = ?, 
+                        shipping_address = ?, 
+                        shipping_email = ?, 
+                        shipping_name = ?, 
+                        customer_id = ?, 
+                        worker_id = ? 
+                        where id = ?`, 
         result, 
         [
             order.timestamp,
@@ -57,11 +76,17 @@ exports.updateOrder = (order, result) => {
             order.total_items,
             order.billing_address,
             order.shipping_address,
+            order.shipping_email,
+            order.shipping_name,
             order.customer_id,
             order.worker_id,
             order.order_id,
         ]
     );
+}
+
+exports.byID = (id, result) => {
+    db_tools.execute('select * from orders where id = ?', result, [id]);
 }
 
 exports.deleteOrder = (id, result) => {

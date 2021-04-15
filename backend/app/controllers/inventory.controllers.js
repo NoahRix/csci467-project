@@ -1,5 +1,5 @@
 const inventory = require("../models/inventory.models.js");
-const test = require("../models/parts.models.js");
+const parts = require("../models/parts.models.js");
 
 /**
  *  This gets all of the rows in the inventory table.
@@ -53,6 +53,18 @@ const test = require("../models/parts.models.js");
 }
 
 /**
+ *  This will update multiple rows in the inventory table.
+ *  
+ *  @param req Request data that holds the array of part ids and quantities.
+ *  @param res Response data that holds the sql server status.
+ */
+ exports.updateRows = (req, res) => {
+    inventory.updateRows(req.body, (data) => {
+        res.send(data);
+    });    
+}
+
+/**
  *  This will add a new inventory row.
  * 
  *  @param req Request data that holds the row object.
@@ -93,7 +105,7 @@ const test = require("../models/parts.models.js");
 
             // Use a promise to populate part_prices.
             const get_part_prices = new Promise(resolve => {
-                test.parts(data => {
+                parts.allParts(data => {
                     part_prices = data.map(row => {
                         return {number: parseInt(row.number), price: parseFloat(row.price)}});
                     resolve();
@@ -139,6 +151,18 @@ const test = require("../models/parts.models.js");
  */
  exports.deleteRowsByIDs = (req, res) => {
     inventory.deleteRowsByIDs(req.body.part_ids, (data) => {
+        res.send(data);
+    });
+}
+
+/**
+ *  This gets rows from the inventory table based on the list of part ids
+ * 
+ *  @param req Request data that holds the array of part ids to be fetched.
+ *  @param res Response data the hold the sql server status.
+ */
+ exports.getRowsByIDs = (req, res) => {
+    inventory.getRowsByIDs(req.body.part_ids, (data) => {
         res.send(data);
     });
 }
@@ -192,7 +216,7 @@ const test = require("../models/parts.models.js");
     
     // Get only the part numbers.
     let get_parts = new Promise(resolve => {
-        test.parts(data => {
+        parts.allParts(data => {
             part_nums_of_parts = data.map(item => item.number);
             resolve();
         });    
@@ -280,7 +304,7 @@ const test = require("../models/parts.models.js");
     // Promises are need for waiting on the callback to finish 
     // fetching the data.
     let get_parts = new Promise((resolve) => { 
-        test.parts(data => {
+        parts.allParts(data => {
             // Retrive the part number as numbers for sorting.
             part_nums_of_parts = data.map(item => parseInt(item.number));
             resolve();
