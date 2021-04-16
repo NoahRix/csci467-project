@@ -18,6 +18,52 @@ const parts = require("../models/parts.models.js");
 }
 
 /**
+ *  This gets all of the rows with parts information in the inventory table.
+ *
+ *  @param req Request data (not used).
+ *  @param res Response data that shows all of the inventory table.
+ */
+ exports.allWithParts = async (req, res) => {
+    check_invalid_parts().then(async (is_invalid) => {
+        if(is_invalid)
+            await fix_rows();
+        
+        let inventory_rows = [];
+
+        let get_inventory_rows = new Promise(resolve => {
+            inventory.all(data => {
+                inventory_rows = data;
+                resolve();
+            });
+        });
+            
+        await get_inventory_rows;
+
+        let parts_rows = [];
+
+        let get_parts_rows = new Promise(resolve => {
+            parts.allParts(data => {
+                parts_rows = data;
+                resolve();
+            });
+        });
+            
+        await get_parts_rows;
+
+        console.log(parts_rows);
+
+        inventory_rows = inventory_rows.sort((a, b) => a.part_id < b.part_id );
+        parts_rows = parts_rows.sort((a, b) => a.number < b.number );
+
+        parts_rows = parts_rows.map((row, index) => {
+            return {...row, quantity: inventory_rows[index].quantity}
+        });
+
+        res.send(parts_rows);
+    });
+}
+
+/**
  *  This gets a single row in the inventory table.
  * 
  *  @param req Request data that holds the part id.
