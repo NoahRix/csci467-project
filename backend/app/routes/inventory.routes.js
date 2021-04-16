@@ -2,6 +2,7 @@ module.exports = app => {
     const inventory = require("../controllers/inventory.controllers.js");
 
     app.get("/api/inventory/all", inventory.all);
+    app.get("/api/inventory/all-with-parts", inventory.allWithParts);
     app.get("/api/inventory/by-part-id", inventory.byPartID);
     app.post("/api/inventory/update", inventory.update);
     app.post("/api/inventory/update-rows", inventory.updateRows);
