@@ -29,7 +29,6 @@ const useStyles = makeStyles((theme) => ({
 export default function Navbar() {
     const classes = useStyles();
 
-    //const [ isCustomerAuthed, setA ] = useState(false);
     const {
         isAdmin,
         setIsAdmin,
@@ -115,6 +114,15 @@ export default function Navbar() {
                             color="inherit"
                         >
                             Shipping Dashboard
+                        </Button>
+                    )}
+                    {isAdmin && (
+                        <Button
+                            component={Link}
+                            to="/OrdersDashboard"
+                            color="inherit"
+                        >
+                            Orders Dashboard
                         </Button>
                     )}
                     {isCustomerAuthed || isEmployeeAuthed ? (
