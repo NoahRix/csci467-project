@@ -3,7 +3,8 @@ import axios from "axios";
 import { AuthContext } from "../utils/AuthContext";
 import { DataGrid } from "@material-ui/data-grid";
 import ImageFrame from "../components/ImageFrame";
-import { Button } from "@material-ui/core"
+import { Button, InputAdornment } from "@material-ui/core"
+import { Search } from "@material-ui/icons"
 import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
 import { TextField } from '@material-ui/core';
 export default function Home() {
@@ -56,41 +57,50 @@ export default function Home() {
   }, shoppingCartContents)
   
   const columns = [
-    { field: "number", headerName: "Part Number", width: 400 },
-    { field: "description", headerName: "Part Description", width: 400 },
-    { field: "price", headerName: "Part Price", width: 400 },
-    { field: "weight", headerName: "Part Weight", width: 400 },
+    { field: "number", headerName: "Part Number", width: 150 },
+    { field: "description", headerName: "Part Description", width: 250 },
+    { field: "price", headerName: "Part Price", width: 150 },
+    { field: "weight", headerName: "Part Weight", width: 150 },
     {
       field: "pictureURL",
       headerName: "Part Picture",
-      width: 400,
+      width: 150,
       renderCell: (params) => <ImageFrame url={params.row.pictureURL} />,
     }
   ];
 
   return (
-    <div>
-        <TextField
-            placeholder="Search the inventory"
-            onChange={onTextChange}
-        />
-      <DataGrid
-        rows={parts.filter(part => {
-            if(searchText === "")
-            {
-                return true
-            }
-            else return part.description.includes(searchText)
-        })}
-        columns={columns}
-        pageSize={10}
-        autoHeight
-        rowHeight={100}
-        checkboxSelection
-        onSelectionModelChange = {currentlySelected}
-        selectionModel={selectedPartRows}
+    <div style={{display: "flex", flexDirection: "column"}}>
+      <TextField
+        style={{margin: "auto"}}
+        placeholder="Search the inventory"
+        onChange={onTextChange}
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+              <Search/>
+            </InputAdornment>
+          )
+        }}
       />
-      <Button endIcon={<AddShoppingCartIcon/>} variant="contained" color="primary" onClick={addToCart}>Add To Cart </Button>
+      <div style={{margin: "auto", width: "900px"}}>
+        <DataGrid
+          rows={parts}
+          columns={columns}
+          pageSize={10}
+          autoHeight
+          rowHeight={100}
+          checkboxSelection
+          onSelectionModelChange = {currentlySelected}
+          selectionModel={selectedPartRows}
+          filterModel={{
+            items: [
+              {columnField: 'description', operatorValue: 'contains', value: searchText}
+            ],
+          }}
+        />
+        </div>
+      <Button style={{margin: "auto", width: "200px"}} endIcon={<AddShoppingCartIcon/>} variant="contained" color="primary" onClick={addToCart}>Add To Cart </Button>
     </div>
   );
 }
