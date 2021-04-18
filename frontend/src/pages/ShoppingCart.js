@@ -47,7 +47,15 @@ const formatUSD = (amount) => {
 };
 
 export default function ShoppingCart(props) {
-    const { id, emailAddress, isCustomerAuthed, shoppingCartContents, setShoppingCartContents } = useContext(AuthContext);
+    const { 
+        id, 
+        emailAddress, 
+        isCustomerAuthed, 
+        shoppingCartContents, 
+        setShoppingCartContents,
+        selectedPartRows,
+        setSelectedPartRows
+    } = useContext(AuthContext);
 
     //Styles
     const classes = useStyles();
@@ -76,9 +84,6 @@ export default function ShoppingCart(props) {
     const [shippingAddressError, setShippingAddressError] = useState(false);
     const [orderRecieved, setOrderRecieved] = useState(false);
 
-    // Test data for the shopping cart contents.
-    //const [shoppingCartContents, setShoppingCartContents] = useState([]);
-
     // To help with updating the quantities.
     let quantities = [];
 
@@ -87,7 +92,6 @@ export default function ShoppingCart(props) {
 
         let trans = uuidv4();
 
-        //let trans = "0a10a449-ef91-434a-8632-16b1ca89a3ab";
         let vendor = "VE341-34";
 
         let name_empty = name === "";
@@ -246,21 +250,10 @@ export default function ShoppingCart(props) {
         );
     }
 
-    // Make a random shopping cart
     useEffect(() => {
-        if(false)
-        axios({
-            method: 'get',
-            url: 'http://localhost:3001/api/test/test'
-        }).then(res => {
-            console.log("shopping");
-            console.log(res.data);
-            setShoppingCartContents(res.data);
-        })
-        .catch(err => {
-            console.log(err);
-        });
-    }, [])
+        console.log("selectedPartRows");
+        console.log(selectedPartRows);
+    }, [selectedPartRows]);
 
     // Get a random name and address.
     useEffect(() => {
@@ -394,7 +387,13 @@ export default function ShoppingCart(props) {
                             margin: "auto",
                             width: "50px"
                         }}
-                        onClick={() => {setParts(parts.filter(part => part.number !== params.row.number))}}
+                        onClick={() => {
+                            setParts(parts.filter(part => part.number !== params.row.number));
+                            setShoppingCartContents(shoppingCartContents.filter(row => row.number !== params.row.number));
+                            setSelectedPartRows(selectedPartRows.filter(part => {
+                                return selectedPartRows[params.row.id] !== part; 
+                            }));
+                        }}
                     >
                         <Delete/>
                     </IconButton>
