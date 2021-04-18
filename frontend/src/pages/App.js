@@ -69,6 +69,7 @@ function App() {
   //Info about the current user.
   const [name, setName] = useLocalStorage('name', "");
   const [id, setId] = useLocalStorage('id', 0);
+  const [emailAddress, setEmailAddress] = useLocalStorage('id', 0);
 
   // Flag for viewing protected routes.
   const [isCustomerAuthed, setIsCustomerAuthed] = useLocalStorage('isCustomerAuthed', false);
@@ -97,6 +98,8 @@ function App() {
               setEmployeeRefreshToken,
               name,
               setName,
+              setEmailAddress,
+              emailAddress,
               id,
               setId,
               isCustomerAuthed,

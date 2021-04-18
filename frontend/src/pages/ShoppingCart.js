@@ -47,7 +47,7 @@ const formatUSD = (amount) => {
 };
 
 export default function ShoppingCart(props) {
-    const { id, isCustomerAuthed, shoppingCartContents, setShoppingCartContents } = useContext(AuthContext);
+    const { id, emailAddress, isCustomerAuthed, shoppingCartContents, setShoppingCartContents } = useContext(AuthContext);
 
     //Styles
     const classes = useStyles();
@@ -63,11 +63,13 @@ export default function ShoppingCart(props) {
     const [totalItems, setTotalItems] = useState(0);
     const [totalPrice, setTotalPrice] = useState(0.0);
     const [name, setName] = useState("");
+    const [email, setEmail] = useState("");
     const [CCNumber, setCCNumber] = useState("");
     const [expireDate, setExpireDate] = useState("");
     const [billingAddress, setBillingAddress] = useState("");
     const [shippingAddress, setShippingAddress] = useState("");
     const [nameError, setNameError] = useState(false);
+    const [emailError, setEmailError] = useState(false);
     const [CCNumberError, setCCNumberError] = useState(false);
     const [expireDateError, setExpireDateError] = useState(false);
     const [billingAddressError, setBillingAddressError] = useState(false);
@@ -88,30 +90,64 @@ export default function ShoppingCart(props) {
         //let trans = "0a10a449-ef91-434a-8632-16b1ca89a3ab";
         let vendor = "VE341-34";
 
-        // Text field input errors for empty fields.
-        setNameError(name === "");
-        setCCNumberError(CCNumber === "");
-        setExpireDateError(expireDate === "");
-        setBillingAddressError(billingAddress === "");
-        setShippingAddressError(shippingAddress === "");
+        let name_empty = name === "";
+        let email_empty = email === "";
+        let CCNumber_empty = CCNumber === "";
+        let expireDate_empty = expireDate === "";
+        let billingAddress_empty = billingAddress === "";
+        let shippingAddress_empty = shippingAddress === "";
 
-        // Make a request for the credit card service.
-        axios({
-            method: "post",
-            url: "http://blitz.cs.niu.edu/CreditCard/",
-            data: {
-                vendor,
-                trans,
-                cc: CCNumber,
-                name,
-                exp: expireDate,
-                amount: totalPrice,
-            },
-        }).then((res) => {
-            console.log(res.data);
-            if (res.data.authorization) handleStoreOrderItems();
-            else console.log("Error: " + res.data.errors[0]);
-        });
+        //console.log("name:" + name);
+        //console.log("email:" + email);
+        //console.log("CCNumber:" + CCNumber);
+        //console.log("expireDate:" + expireDate);
+        //console.log("billingAddress:" + billingAddress);
+        //console.log("shippingAddress:" + shippingAddress);
+
+        //console.log("name_empty:" + name_ready);
+        //console.log("email_empty:" + email_ready);
+        //console.log("CCNumber_empty:" + CCNumber_ready);
+        //console.log("expireDate_empty:" + expireDate_ready);
+        //console.log("billingAddress_empty:" + billingAddress_ready);
+        //console.log("shippingAddress_empty:" + shippingAddress_ready);
+
+        let ready = 
+            !name_empty &&
+            !(email_empty && !isCustomerAuthed) &&
+            !CCNumber_empty &&
+            !expireDate_empty &&
+            !billingAddress_empty &&
+            !shippingAddress_empty
+
+        // Text field input errors for empty fields.
+        setNameError(name_empty);
+        setEmailError(email_empty);
+        setCCNumberError(CCNumber_empty);
+        setExpireDateError(expireDate_empty);
+        setBillingAddressError(billingAddress_empty);
+        setShippingAddressError(shippingAddress_empty);
+
+        console.log("ready: " + ready);
+
+        if(ready){
+            // Make a request for the credit card service.
+            axios({
+                method: "post",
+                url: "http://blitz.cs.niu.edu/CreditCard/",
+                data: {
+                    vendor,
+                    trans,
+                    cc: CCNumber,
+                    name,
+                    exp: expireDate,
+                    amount: totalPrice,
+                },
+            }).then((res) => {
+                console.log(res.data);
+                if (res.data.authorization) handleStoreOrderItems();
+                else console.log("Error: " + res.data.errors[0]);
+            });
+        }
     };
 
     const handleStoreOrderItems = async () => {
@@ -121,6 +157,7 @@ export default function ShoppingCart(props) {
             .replace("T", " ");
 
         console.log("customer_id: " + id);
+        console.log("emailAddress: " + emailAddress);
 
         // Create a new order row.
         let order_row = {
@@ -134,6 +171,8 @@ export default function ShoppingCart(props) {
             total_items: totalItems,
             billing_address: billingAddress,
             shipping_address: shippingAddress,
+            shipping_email: isCustomerAuthed ? emailAddress : email, // Global email, or else local email.
+            shipping_name: name,
             customer_id: isCustomerAuthed !== null ? id : 50,
             worker_id: 1,
         };
@@ -205,7 +244,7 @@ export default function ShoppingCart(props) {
                 return part;
             })
         );
-    };
+    }
 
     // Make a random shopping cart
     useEffect(() => {
@@ -214,6 +253,8 @@ export default function ShoppingCart(props) {
             method: 'get',
             url: 'http://localhost:3001/api/test/test'
         }).then(res => {
+            console.log("shopping");
+            console.log(res.data);
             setShoppingCartContents(res.data);
         })
         .catch(err => {
@@ -603,6 +644,25 @@ export default function ShoppingCart(props) {
                                                 label="Shipping Address"
                                             />
                                         </Grid>
+                                        {!isCustomerAuthed && <Grid
+                                            className={classes.paymentFormItem}
+                                            item
+                                            xs={6}
+                                        >
+                                            <TextField
+                                                className={
+                                                    classes.paymentFormItemInner
+                                                }
+                                                value={email}
+                                                error={emailError}
+                                                onChange={(e) => {
+                                                    setEmail(
+                                                        e.target.value
+                                                    );
+                                                }}
+                                                label="Email Address"
+                                            />
+                                        </Grid>}
                                         <Grid
                                             className={classes.paymentFormItem}
                                             item

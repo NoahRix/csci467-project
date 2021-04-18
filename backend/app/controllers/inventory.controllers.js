@@ -1,5 +1,5 @@
 const inventory = require("../models/inventory.models.js");
-const test = require("../models/parts.models.js");
+const parts = require("../models/parts.models.js");
 
 /**
  *  This gets all of the rows in the inventory table.
@@ -14,6 +14,52 @@ const test = require("../models/parts.models.js");
         inventory.all(data => {
             res.send(data);
         });
+    });
+}
+
+/**
+ *  This gets all of the rows with parts information in the inventory table.
+ *
+ *  @param req Request data (not used).
+ *  @param res Response data that shows all of the inventory table.
+ */
+ exports.allWithParts = async (req, res) => {
+    check_invalid_parts().then(async (is_invalid) => {
+        if(is_invalid)
+            await fix_rows();
+        
+        let inventory_rows = [];
+
+        let get_inventory_rows = new Promise(resolve => {
+            inventory.all(data => {
+                inventory_rows = data;
+                resolve();
+            });
+        });
+            
+        await get_inventory_rows;
+
+        let parts_rows = [];
+
+        let get_parts_rows = new Promise(resolve => {
+            parts.allParts(data => {
+                parts_rows = data;
+                resolve();
+            });
+        });
+            
+        await get_parts_rows;
+
+        console.log(parts_rows);
+
+        inventory_rows = inventory_rows.sort((a, b) => a.part_id < b.part_id );
+        parts_rows = parts_rows.sort((a, b) => a.number < b.number );
+
+        parts_rows = parts_rows.map((row, index) => {
+            return {...row, quantity: inventory_rows[index].quantity}
+        });
+
+        res.send(parts_rows);
     });
 }
 
@@ -50,6 +96,18 @@ const test = require("../models/parts.models.js");
             res.send("Part does not exist in the parts table.");
     });
 
+}
+
+/**
+ *  This will update multiple rows in the inventory table.
+ *  
+ *  @param req Request data that holds the array of part ids and quantities.
+ *  @param res Response data that holds the sql server status.
+ */
+ exports.updateRows = (req, res) => {
+    inventory.updateRows(req.body, (data) => {
+        res.send(data);
+    });    
 }
 
 /**
@@ -93,7 +151,7 @@ const test = require("../models/parts.models.js");
 
             // Use a promise to populate part_prices.
             const get_part_prices = new Promise(resolve => {
-                test.parts(data => {
+                parts.allParts(data => {
                     part_prices = data.map(row => {
                         return {number: parseInt(row.number), price: parseFloat(row.price)}});
                     resolve();
@@ -139,6 +197,18 @@ const test = require("../models/parts.models.js");
  */
  exports.deleteRowsByIDs = (req, res) => {
     inventory.deleteRowsByIDs(req.body.part_ids, (data) => {
+        res.send(data);
+    });
+}
+
+/**
+ *  This gets rows from the inventory table based on the list of part ids
+ * 
+ *  @param req Request data that holds the array of part ids to be fetched.
+ *  @param res Response data the hold the sql server status.
+ */
+ exports.getRowsByIDs = (req, res) => {
+    inventory.getRowsByIDs(req.body.part_ids, (data) => {
         res.send(data);
     });
 }
@@ -192,7 +262,7 @@ const test = require("../models/parts.models.js");
     
     // Get only the part numbers.
     let get_parts = new Promise(resolve => {
-        test.parts(data => {
+        parts.allParts(data => {
             part_nums_of_parts = data.map(item => item.number);
             resolve();
         });    
@@ -280,7 +350,7 @@ const test = require("../models/parts.models.js");
     // Promises are need for waiting on the callback to finish 
     // fetching the data.
     let get_parts = new Promise((resolve) => { 
-        test.parts(data => {
+        parts.allParts(data => {
             // Retrive the part number as numbers for sorting.
             part_nums_of_parts = data.map(item => parseInt(item.number));
             resolve();

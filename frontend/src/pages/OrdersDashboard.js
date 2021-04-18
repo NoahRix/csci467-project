@@ -59,8 +59,6 @@ function Row({ row, updateOrders }) {
     const [orderItems, setOrderItems] = useState([]);
     
     const handleDeleteOrder = (id) => {
-        console.log("DELETE: " + id);
-
         axios({
             method: "delete",
             url: "http://localhost:3001/api/orders/delete",
@@ -87,8 +85,6 @@ function Row({ row, updateOrders }) {
     }
 
     const handleConfirmOrder = (id) => {
-        console.log("CONFIRM: " + id);
-
         axios({
             method: "post",
             url: "http://localhost:3001/api/orders/confirm",
