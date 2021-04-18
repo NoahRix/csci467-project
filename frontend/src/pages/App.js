@@ -79,6 +79,7 @@ function App() {
 
   // Shopping Cart Data
   const [shoppingCartContents, setShoppingCartContents] = useLocalStorage('shoppingCartContents', []);
+  const [selectedPartRows, setSelectedPartRows] = useLocalStorage('selectedPartRows', [])
 
   return (
     <div>
@@ -105,7 +106,9 @@ function App() {
               isAdmin,
               setIsAdmin,
               shoppingCartContents,
-              setShoppingCartContents
+              setShoppingCartContents,
+              selectedPartRows,
+              setSelectedPartRows
             }}>
             <Navbar/>
             <Route exact path="/" component={Home}/>

@@ -47,7 +47,7 @@ const formatUSD = (amount) => {
 };
 
 export default function ShoppingCart(props) {
-    const { id, isCustomerAuthed } = useContext(AuthContext);
+    const { id, isCustomerAuthed, shoppingCartContents, setShoppingCartContents } = useContext(AuthContext);
 
     //Styles
     const classes = useStyles();
@@ -75,7 +75,7 @@ export default function ShoppingCart(props) {
     const [orderRecieved, setOrderRecieved] = useState(false);
 
     // Test data for the shopping cart contents.
-    const [shoppingCartContents, setShoppingCartContents] = useState([]);
+    //const [shoppingCartContents, setShoppingCartContents] = useState([]);
 
     // To help with updating the quantities.
     let quantities = [];
@@ -209,6 +209,7 @@ export default function ShoppingCart(props) {
 
     // Make a random shopping cart
     useEffect(() => {
+        if(false)
         axios({
             method: 'get',
             url: 'http://localhost:3001/api/test/test'
@@ -218,7 +219,7 @@ export default function ShoppingCart(props) {
         .catch(err => {
             console.log(err);
         });
-    }, [setShoppingCartContents])
+    }, [])
 
     // Get a random name and address.
     useEffect(() => {
