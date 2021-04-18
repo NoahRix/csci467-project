@@ -248,6 +248,7 @@ export default function ShoppingCart(props) {
 
     // Make a random shopping cart
     useEffect(() => {
+        if(false)
         axios({
             method: 'get',
             url: 'http://localhost:3001/api/test/test'
