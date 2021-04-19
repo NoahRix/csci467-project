@@ -46,8 +46,45 @@ const formatUSD = (amount) => {
     return Number(amount.toFixed(2)).toLocaleString();
 };
 
+function QuantityField({value, quantityLimit, onChange, id}){
+    
+    const [fieldValue, setFieldValue] = useState(value);
+    
+    useEffect(() => {
+        setFieldValue(value);
+    }, [setFieldValue, value]);
+
+    useEffect(() => {
+        console.log(fieldValue);
+        if(fieldValue > quantityLimit){
+            setFieldValue(quantityLimit);
+            onChange(quantityLimit, id);
+        }
+    }, [setFieldValue, fieldValue]);
+
+    return(
+        <TextField
+            style={{
+                width: "90px",
+            }}
+            type="number"
+            value={fieldValue}
+            InputProps={{ inputProps: { min: 0, max: quantityLimit} }}
+            onChange={(e) => {onChange(e.target.value, id);}}
+        />
+    );
+}
+
 export default function ShoppingCart(props) {
-    const { id, emailAddress, isCustomerAuthed, shoppingCartContents, setShoppingCartContents } = useContext(AuthContext);
+    const { 
+        id, 
+        emailAddress, 
+        isCustomerAuthed, 
+        shoppingCartContents, 
+        setShoppingCartContents,
+        selectedPartRows,
+        setSelectedPartRows
+    } = useContext(AuthContext);
 
     //Styles
     const classes = useStyles();
@@ -75,9 +112,7 @@ export default function ShoppingCart(props) {
     const [billingAddressError, setBillingAddressError] = useState(false);
     const [shippingAddressError, setShippingAddressError] = useState(false);
     const [orderRecieved, setOrderRecieved] = useState(false);
-
-    // Test data for the shopping cart contents.
-    //const [shoppingCartContents, setShoppingCartContents] = useState([]);
+    const [quantityLimits, setQuantityLimits] = useState([]);
 
     // To help with updating the quantities.
     let quantities = [];
@@ -87,7 +122,6 @@ export default function ShoppingCart(props) {
 
         let trans = uuidv4();
 
-        //let trans = "0a10a449-ef91-434a-8632-16b1ca89a3ab";
         let vendor = "VE341-34";
 
         let name_empty = name === "";
@@ -197,8 +231,6 @@ export default function ShoppingCart(props) {
 
         await insert_new_order;
 
-        console.log("Last Inserted ID: " + last_order_id);
-
         // build the array of order items for the order_items many-to-many table.
         let order_items = parts.map((part) => {
             return {
@@ -207,9 +239,6 @@ export default function ShoppingCart(props) {
                 quantity: part.quantity,
             };
         });
-
-        console.log("order_items");
-        console.log(order_items);
 
         let affected_rows = 0;
 
@@ -227,7 +256,6 @@ export default function ShoppingCart(props) {
 
         await insert_order_items;
 
-        console.log("Affected rows: " + affected_rows);
         if (affected_rows > 0) {
             setParts([]);
             setShoppingCartContents([]);
@@ -236,8 +264,8 @@ export default function ShoppingCart(props) {
     };
 
     // This updates the quantity values when ever the user changes a quantity from a row.
-    const handleQuantityChange = (e, index) => {
-        quantities[index] = e.target.value;
+    const handleQuantityChange = (value, index) => {
+        quantities[index] = value;
         setParts(
             parts.map((part, index) => {
                 part.quantity = parseInt(quantities[index]);
@@ -246,21 +274,22 @@ export default function ShoppingCart(props) {
         );
     }
 
-    // Make a random shopping cart
     useEffect(() => {
-        if(false)
         axios({
-            method: 'get',
-            url: 'http://localhost:3001/api/test/test'
+            method: "post",
+            url: "http://localhost:3001/api/inventory/by-part-ids",
+            data: {part_ids: shoppingCartContents.map(row => row.number)}
         }).then(res => {
-            console.log("shopping");
             console.log(res.data);
-            setShoppingCartContents(res.data);
+            setQuantityLimits(res.data.map(row => row.quantity));
         })
-        .catch(err => {
-            console.log(err);
-        });
-    }, [])
+        .catch(err => console.log(err));
+    }, [setQuantityLimits]);
+
+    useEffect(() => {
+        console.log("selectedPartRows");
+        console.log(selectedPartRows);
+    }, [selectedPartRows]);
 
     // Get a random name and address.
     useEffect(() => {
@@ -352,7 +381,7 @@ export default function ShoppingCart(props) {
     useEffect(() => {
         setTaxAmount(taxRate * (totalPartsPrice + shippingOption));
         setTotalPrice(totalPartsPrice + shippingOption + (taxRate * (totalPartsPrice + shippingOption)));
-    }, [totalPartsPrice, shippingOption]);
+    }, [totalPartsPrice, shippingOption, taxRate]);
 
     const ImageFrame = ({ url }) => {
         return (
@@ -382,7 +411,7 @@ export default function ShoppingCart(props) {
         );
     };
 
-    const columns = [
+    const columns  = [
         {
             field: "id",
             headerName: "Action",
@@ -394,7 +423,13 @@ export default function ShoppingCart(props) {
                             margin: "auto",
                             width: "50px"
                         }}
-                        onClick={() => {setParts(parts.filter(part => part.number !== params.row.number))}}
+                        onClick={() => {
+                            setParts(parts.filter(part => part.number !== params.row.number));
+                            setShoppingCartContents(shoppingCartContents.filter(row => row.number !== params.row.number));
+                            setSelectedPartRows(selectedPartRows.filter(part => {
+                                return selectedPartRows[params.row.id] !== part; 
+                            }));
+                        }}
                     >
                         <Delete/>
                     </IconButton>
@@ -432,23 +467,17 @@ export default function ShoppingCart(props) {
             ),
         },
         {
+            key: "quantity",
             field: "quantity",
             headerName: "Quantity",
             width: 120,
             renderCell: (params) => (
                 <div className={classes.cellCustom}>
-                    <TextField
-                        style={{
-                            width: "90px",
-                        }}
-                        type="number"
-                        value={params.row.quantity}
-                        inputProps={{ min: 0 }}
-                        onChange={(e) => {
-                            console.log(e.target.value);
-                            console.log(params.row.id);
-                            handleQuantityChange(e, params.row.id);
-                        }}
+                    <QuantityField
+                        id={params.row.id} 
+                        value={params.row.quantity} 
+                        quantityLimit={quantityLimits[params.row.id]}
+                        onChange={handleQuantityChange} 
                     />
                 </div>
             ),
@@ -503,6 +532,7 @@ export default function ShoppingCart(props) {
                             })}
                             columns={columns}
                             pageSize={5}
+                            disableSelectionOnClick
                         />
                     </div>
                     <Grid
@@ -565,7 +595,7 @@ export default function ShoppingCart(props) {
                                                 label="Name"
                                                 value={name}
                                                 error={nameError}
-                                                onChange={(e) => {
+                                                onBlur={(e) => {
                                                     setName(e.target.value);
                                                 }}
                                             />
@@ -581,7 +611,7 @@ export default function ShoppingCart(props) {
                                                 }
                                                 value={CCNumber}
                                                 error={CCNumberError}
-                                                onChange={(e) => {
+                                                onBlur={(e) => {
                                                     setCCNumber(e.target.value);
                                                 }}
                                                 label="Credit Card Number"
@@ -598,7 +628,7 @@ export default function ShoppingCart(props) {
                                                 }
                                                 value={expireDate}
                                                 error={expireDateError}
-                                                onChange={(e) => {
+                                                onBlur={(e) => {
                                                     setExpireDate(
                                                         e.target.value
                                                     );
@@ -617,7 +647,7 @@ export default function ShoppingCart(props) {
                                                 }
                                                 value={billingAddress}
                                                 error={billingAddressError}
-                                                onChange={(e) => {
+                                                onBlur={(e) => {
                                                     setBillingAddress(
                                                         e.target.value
                                                     );
@@ -636,7 +666,7 @@ export default function ShoppingCart(props) {
                                                 }
                                                 value={shippingAddress}
                                                 error={shippingAddressError}
-                                                onChange={(e) => {
+                                                onBlur={(e) => {
                                                     setShippingAddress(
                                                         e.target.value
                                                     );
@@ -653,12 +683,10 @@ export default function ShoppingCart(props) {
                                                 className={
                                                     classes.paymentFormItemInner
                                                 }
-                                                value={email}
+                                                placeholder={email}
                                                 error={emailError}
-                                                onChange={(e) => {
-                                                    setEmail(
-                                                        e.target.value
-                                                    );
+                                                onBlur={(e) => {
+                                                    setEmail(e.target.value);
                                                 }}
                                                 label="Email Address"
                                             />

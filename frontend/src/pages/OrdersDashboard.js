@@ -15,7 +15,8 @@ import {
     IconButton,
     Collapse,
     Box,
-    Tooltip
+    Tooltip,
+    TextField
 } from "@material-ui/core";
 import {
     KeyboardArrowDown,
@@ -232,6 +233,7 @@ export default function OrdersDashboard() {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [sortFlag, setSortFlag] = useState(0b00000000);
+    const [searchText, setSearchText] = useState("");
   
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -333,6 +335,10 @@ export default function OrdersDashboard() {
                 <Tab label="All Orders" />
             </Tabs>
             <Paper className={classes.root}>
+                <TextField
+                    placeholder="Search For Email"
+                    onChange={e => {setSearchText(e.target.value)}}
+                />
                 <TableContainer>
                     <Table>
                         <TableHead>
@@ -365,7 +371,7 @@ export default function OrdersDashboard() {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {orders.sort(compare).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((order, index) => (
+                            {orders.filter(order => order.shipping_email.includes(searchText)).sort(compare).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((order, index) => (
                                 <Row key={index} row={order} updateOrders={updateOrders} />
                             ))}
                         </TableBody>

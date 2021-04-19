@@ -78,7 +78,9 @@ exports.deleteOrder = (req, res) => {
 exports.confirmOrder = (req, res) => {
     orders.confirmOrder(req.body.id, (data) => {
         res.send(data);
-    })
+    });
+
+    sendEmail(req.body.id, false);
 }
 
 exports.cancelOrder = (req, res) => {
@@ -94,143 +96,9 @@ exports.shipOrder = async (req, res) => {
         res.send(data);
     })
 
-    let order = null;
-
-    // Get the order based on the given order id.
-    let get_order_info = new Promise(resolve => {
-        orders.byID(req.body.id, (data) => {
-            order = data;
-            resolve();
-        });
-    });
-
-    await get_order_info;
-
-    let order_items = null;
-
-    // Get the items of that order.
-    let get_order_items = new Promise(resolve => {
-        orders.orderItems(req.body.id, (data) => {
-            order_items = data;
-            resolve();
-        });
-    });
-
-    await get_order_items;
-
-    let parts_info = null;
+    let order_info = null;
     
-    // Get the parts info of those items.
-    let get_parts_info = new Promise(resolve => {
-        parts.byPartNumbers((data) => {
-            parts_info = data;
-            resolve();
-        }, order_items.map(item => item.part_id));
-    });
-    
-    await get_parts_info;
-
-    let customer_name = "";
-    let customer_email = "";
-
-    // Get the customers name
-    let get_customer_name_and_email = new Promise(resolve => {
-        customers.ID(order[0].customer_id, (data) => {
-            customer_name = data[0].name;
-            customer_email = order[0].customer_id === 1 ? order[0].shipping_email : data[0].email; 
-            resolve();
-        });
-    });
-    
-    await get_customer_name_and_email;
-    
-    // Get the name of the customers who are not logged in.
-    if(customer_name = "anonymous")
-        customer_name = order[0].shipping_name;
-
-    // This holds the complete row information of all the part per order for the email data.
-    let order_info = parts_info.map((part, index) => {return {...part, quantity: order_items[index].quantity}})
-
-    // CA$H MONEY DOLLAS
-    const formatUSD = (amount) => {
-        return `$${Number(amount).toFixed(2).toLocaleString()}`
-    }
-
-    let html = `
-    <body>
-    <style>
-        table, td, tr {
-            border: 1px solid black;
-            text-align: center;
-        }
-    </style>
-    <div>
-        <h4>Your order has been shipped! <br/> Here is a review of your order:</h4>
-        <ul>
-            <li><b>Name: </b>${customer_name}</li>
-            <li><b>Order ID: </b>${order[0].id}</li>
-            <li><b>Date & Time Ordered: </b>${order[0].timestamp}</li>
-            <li><b>Payment Information: </b>${order[0].payment_info}</li>
-            <li><b>Tax Amount: </b>${formatUSD(order[0].tax_amount)}</li>
-            <li><b>Shipping Price: </b>${formatUSD(order[0].shipping_handling_price)}</li>
-            <li><b>Total Price: </b>${formatUSD(order[0].total_price)}</li>
-            <li><b>Total # of Items: </b>${order[0].total_items}</li>
-            <li><b>Billing Address: </b>${order[0].billing_address}</li>
-            <li><b>Shipping Address: </b>${order[0].shipping_address}</li>
-        </ul>
-    </div><br/>
-    <div>
-        <table>
-            <tr>
-                <td>Part Image</td> 
-                <td>Part Number</td> 
-                <td>Part Decsription</td> 
-                <td>Part Price (USD)</td> 
-                <td>Quantity</td> 
-            </tr>
-        ${order_info.map(row => `  
-            <tr>
-                <td><img src="${row.pictureURL}"/></td> 
-                <td>${row.number}</td> 
-                <td>${row.description}</td> 
-                <td>${row.price}</td> 
-                <td>${row.quantity}</td> 
-            </tr>
-        `
-        ).join("")}
-        </table>
-    </div>
-    </body>
-    `;
-
-    const fs = require('fs');
-
-    fs.writeFile('./emailtest.html', html, err => {if(err) console.log(err); return;});
-    
-    if(true) {
-        // Set up the mailer service.
-        let transporter = nodemailer.createTransport({
-            service: 'gmail',
-            auth: {
-                user: 'group1yeet@gmail.com',
-                pass: 'BigYeet!'
-            }
-        });
-
-        let mailOptions = {
-            from: 'group1yeet@gmail.com',
-            to: customer_email,
-            subject: '1A Market Shipping Notice',
-            html
-        };
-        
-        transporter.sendMail(mailOptions, (err, info) => {
-            if(err)
-            console.log(err);
-            else 
-            console.log('Email sent: ' + info.response);
-        });   
-    }
+    await sendEmail(req.body.id, true).then(_order_info => order_info = _order_info);
 
     // Prepare to deduct from the inventory table.
     // Get the part id/numbers and quantities.
@@ -311,4 +179,146 @@ exports.addOrderItems = (req, res) => {
     orders.addOrderItems(req.body, (data) => {
         res.send(data);
     });
+}
+
+async function sendEmail(id, flag){
+    let order = null;
+
+    // Get the order based on the given order id.
+    let get_order_info = new Promise(resolve => {
+        orders.byID(id, (data) => {
+            order = data;
+            resolve();
+        });
+    });
+
+    await get_order_info;
+
+    let order_items = null;
+
+    // Get the items of that order.
+    let get_order_items = new Promise(resolve => {
+        orders.orderItems(id, (data) => {
+            order_items = data;
+            resolve();
+        });
+    });
+
+    await get_order_items;
+
+    let parts_info = null;
+    
+    // Get the parts info of those items.
+    let get_parts_info = new Promise(resolve => {
+        parts.byPartNumbers((data) => {
+            parts_info = data;
+            resolve();
+        }, order_items.map(item => item.part_id));
+    });
+    
+    await get_parts_info;
+
+    let customer_name = "";
+    let customer_email = "";
+
+    // Get the customers name
+    let get_customer_name_and_email = new Promise(resolve => {
+        customers.ID(order[0].customer_id, (data) => {
+            customer_name = data[0].name;
+            customer_email = order[0].customer_id === 1 ? order[0].shipping_email : data[0].email; 
+            resolve();
+        });
+    });
+    
+    await get_customer_name_and_email;
+    
+    // Get the name of the customers who are not logged in.
+    if(customer_name = "anonymous")
+        customer_name = order[0].shipping_name;
+
+    // This holds the complete row information of all the part per order for the email data.
+    let order_info = parts_info.map((part, index) => {return {...part, quantity: order_items[index].quantity}})
+
+    let html = `
+    <body>
+    <style>
+        table, td, tr {
+            border: 1px solid black;
+            text-align: center;
+        }
+    </style>
+    <div>
+        <h4>Your order has been ${flag ? "shipped" : "confirmed"}! <br/> Here is a review of your order:</h4>
+        <ul>
+            <li><b>Name: </b>${customer_name}</li>
+            <li><b>Order ID: </b>${order[0].id}</li>
+            <li><b>Date & Time Ordered: </b>${order[0].timestamp}</li>
+            <li><b>Payment Information: </b>${order[0].payment_info}</li>
+            <li><b>Tax Amount: </b>${formatUSD(order[0].tax_amount)}</li>
+            <li><b>Shipping Price: </b>${formatUSD(order[0].shipping_handling_price)}</li>
+            <li><b>Total Price: </b>${formatUSD(order[0].total_price)}</li>
+            <li><b>Total # of Items: </b>${order[0].total_items}</li>
+            <li><b>Billing Address: </b>${order[0].billing_address}</li>
+            <li><b>Shipping Address: </b>${order[0].shipping_address}</li>
+        </ul>
+    </div><br/>
+    <div>
+        <table>
+            <tr>
+                <td>Part Image</td> 
+                <td>Part Number</td> 
+                <td>Part Decsription</td> 
+                <td>Part Price (USD)</td> 
+                <td>Quantity</td> 
+            </tr>
+        ${order_info.map(row => `  
+            <tr>
+                <td><img src="${row.pictureURL}"/></td> 
+                <td>${row.number}</td> 
+                <td>${row.description}</td> 
+                <td>${row.price}</td> 
+                <td>${row.quantity}</td> 
+            </tr>
+        `
+        ).join("")}
+        </table>
+    </div>
+    </body>
+    `;
+
+    const fs = require('fs');
+
+    fs.writeFile('./emailtest.html', html, err => {if(err) console.log(err); return;});
+    
+    if(true) {
+        // Set up the mailer service.
+        let transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: 'group1yeet@gmail.com',
+                pass: 'BigYeet!'
+            }
+        });
+
+        let mailOptions = {
+            from: 'group1yeet@gmail.com',
+            to: customer_email,
+            subject: `1A Market ${flag ? "Shipping" : "Confirmation"} Notice`,
+            html
+        };
+        
+        transporter.sendMail(mailOptions, (err, info) => {
+            if(err)
+            console.log(err);
+            else 
+            console.log('Email sent: ' + info.response);
+        });   
+    }
+
+    return order_info;
+}
+
+// CA$H MONEY DOLLAS
+function formatUSD(amount){
+    return `$${Number(amount).toFixed(2).toLocaleString()}`;
 }

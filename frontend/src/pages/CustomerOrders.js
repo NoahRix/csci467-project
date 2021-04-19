@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useState } from "react";
-import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
 import Collapse from '@material-ui/core/Collapse';
@@ -160,7 +159,7 @@ export default function CustomerOrders() {
       url: "http://localhost:3001/api/orders/ordersOfCustomer",
       data: { customerId: id },
     }).then( res => {
-      res.data.map( o => {
+      res.data.forEach( o => {
         let twoJSON = {}
         let oneList = []
 
@@ -176,23 +175,23 @@ export default function CustomerOrders() {
           url: "http://localhost:3001/api/orders/orderItems",
           data: { orderId: o.id },
         }).then( res => {
-          res.data.map( i => {
+          res.data.forEach( i => {
             let oneJSON = {}
             oneJSON['itemNumber'] = i.part_id
             oneJSON['itemQuantity'] = i.quantity
             parts.push(i.part_id)
-            console.log("one : " + i.part_id)
+            //console.log("one : " + i.part_id)
 
             axios({
               method: "post",
               url: "http://localhost:3001/api/parts/by-part-number/",
               data: { partNumber: i.part_id },
             }).then( res => {
-              res.data.map( item => {
+              res.data.forEach( item => {
                 oneJSON['itemDescription'] = item.description;
                 oneJSON['itemPrice'] = item.price;
                 oneJSON['itemPicURL'] = item.pictureURL;
-                console.log("two : " + item.number)
+                //console.log("two : " + item.number)
               })
             }).catch( err => {
               console.log(err)
@@ -225,7 +224,7 @@ export default function CustomerOrders() {
     }).catch( err => {
       console.log(err)
     });
-  }, [])
+  }, [id])
 
   const clicked = () => {
     console.log(ordersList)
@@ -245,8 +244,8 @@ export default function CustomerOrders() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {ordersList.map((row) => (
-            <Row key={row.name} row={row} />
+          {ordersList.map((row, index) => (
+            <Row key={index} row={row} />
           ))}
         </TableBody>
       </Table>

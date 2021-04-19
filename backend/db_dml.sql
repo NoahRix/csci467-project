@@ -23,8 +23,8 @@ insert into `shipping_information` (`type`, `cost`) values
 -- Orders
 insert into `orders` values
 (1,'2021-03-29 00:21:05',0,0,'blah',8.25,5.99,493.94,5,'430 russell rd apt 5','430 russell rd apt 5','rix.noah@yahoo.com','Frank Charles',1,1),
-(2,'2021-02-14 17:15:25',1,1,'blah',7.10,9.99,294.23,3,'307 sutherland ln','307 sutherland ln',null,null,2,1),
-(3,'2021-01-26 08:36:50',0,1,'blah',8.99,10.49,483.97,7,'431 russell rd apt 6','431 russell rd apt 6',null,null,3,1),
+(2,'2021-02-14 17:15:25',1,1,'blah',7.10,9.99,294.23,3,'307 sutherland ln','307 sutherland ln','rutvik503@gmail.com',null,2,1),
+(3,'2021-01-26 08:36:50',0,1,'blah',8.99,10.49,483.97,7,'431 russell rd apt 6','431 russell rd apt 6','rutvik503@gmail.com',null,3,1),
 (4,'2021-04-03 00:03:05',1,1,'6011 1234 4321 1234 12/2024',7.25,5.99,857.44,54,'430 russell rd apt 5','430 russell rd apt 5','rix.noah@yahoo.com','Gary Jackson',1,1),
 (5,'2021-04-12 21:10:14',0,0,'6011 1234 4321 1234 12/2024',1264.25,499.99,18120.96,90,'1234 Street','1234 Street','rix.noah@yahoo.com','Peter Smith',1,1),
 (6,'2021-04-12 21:11:33',0,0,'6011 1234 4321 1234 12/2024',1226.75,0.00,17583.47,90,'456 Anderson Road','456 Anderson Road','rix.noah@yahoo.com','Jimmy Jones',1,1),
