@@ -87,7 +87,7 @@ export default function ShippingDashboard() {
     }).then( res => {
       let info = {}
       res.data.map( data => {
-        info[data.type] = data.cost
+        info[data.type] = parseFloat(data.cost)
       })
       setShippingInfo(info)
     }).catch( err => {
@@ -98,7 +98,7 @@ export default function ShippingDashboard() {
   const handleChange = (event) => {
     setShippingInfo({
       ...shippingInfo,
-      [event.target.name]: event.target.value,
+      [event.target.name]: event.target.value === "" ? 0 : parseFloat(event.target.value),
     });
   };
 
@@ -114,25 +114,32 @@ export default function ShippingDashboard() {
   }
 
   const handleSubmit = (event) => {
-    let type = event.target.id
-    let cost = 0
+    let shipping_type = event.target.id
+    // let shipping_cost = 0
 
-    if(event.target.value !== ''){
-      cost = event.target.value
-    }
+    // if(event.target.value !== ''){
+    //   shipping_cost = event.target.value
+    // }
+    
+    // console.log(shipping_type)
+    // console.log(shipping_cost)
 
-    axios({
-      method: "patch",
-      url: "http://localhost:3001/api/shipping_information/update",
-      data: { 
-        type: type,
-        cost: cost,
-      }
-    }).then( res => {
-      console.log(res.data)
-    }).catch( err => {
-      console.log(err)
-    });
+
+    console.log(event)
+    // console.log(shippingInfo)
+
+    // axios({
+    //   method: "patch",
+    //   url: "http://localhost:3001/api/shipping_information/update",
+    //   data: { 
+    //     type: shipping_type,
+    //     cost: shipping_cost,
+    //   }
+    // }).then( res => {
+    //   console.log(res.data)
+    // }).catch( err => {
+    //   console.log(err)
+    // });
 
     setShowSubmitButton('none')
   }
@@ -174,7 +181,7 @@ export default function ShippingDashboard() {
                 aria-label="save shipping cost"
                 id={key} 
                 value={shippingInfo[key]} 
-                onClick={handleSubmit}
+                onClick={(e) => handleSubmit(e)}
                 className={showSubmitButton === key ? classes.show : classes.hide}
               >
                 <CheckCircleOutlineIcon fontSize="large"/>
