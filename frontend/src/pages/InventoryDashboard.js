@@ -71,8 +71,6 @@ export default function InventoryDashboard(){
     const [rows, setRows] = useState([]);
     const [totalFloorPrice, setTotalFloorPrice] = useState(0.0);
 
-    let quanities = [];
-
     const updateQuantities = (new_quantity) => {
         console.log("new_quantity: " + new_quantity);
     }
