@@ -29,21 +29,22 @@ export default function LoginPage(props) {
     const [showError, setShowError] = useState(false);
     const [isEmployee, setIsEmployee] = useState(false);
 
-    const { setIsAdmin, setIsCustomerAuthed, setIsEmployeeAuthed, setId, id, setEmailAddress } = useContext(
+    const { setIsAdmin, setIsCustomerAuthed, isCustomerAuthed, setIsEmployeeAuthed, isEmployeeAuthed, setId, id, setEmailAddress } = useContext(
         AuthContext
     );
 
     const getCustomerInfo = () => {
 
+
         axios({
             method: "post",
-            url: "http://localhost:3001/api/customers/by-id",
+            url: isCustomerAuthed ? "http://localhost:3001/api/customers/by-id" : "http://localhost:3001/api/workers/by-id",
             data: { id },
         }).then((res) => {
             if(res.data[0])
                 setEmailAddress(res.data[0].email)
         }).catch(err =>  console.log(err));
-    }
+}
     
     const handleLogin = () => {
         axios({
@@ -55,8 +56,11 @@ export default function LoginPage(props) {
                 is_customer: !isEmployee,
             },
         }).then((res) => {
-            console.log(res.data);
+            console.log("res.data.is_authed");
+            console.log(res.data.is_authed);
             if (res.data.is_authed) {
+                console.log("IdInput");
+                console.log(IdInput);
                 setId(parseInt(IdInput));
                 if (isEmployee) setIsEmployeeAuthed(isEmployee);
                 else setIsCustomerAuthed(!isEmployee);
