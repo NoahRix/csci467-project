@@ -8,7 +8,7 @@ import { Search } from "@material-ui/icons"
 import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
 import { TextField } from '@material-ui/core';
 export default function Home() {
-  const { shoppingCartContents, setShoppingCartContents, selectedPartRows, setSelectedPartRows } = useContext(
+  const { setShoppingCartContents, selectedPartRows, setSelectedPartRows } = useContext(
     AuthContext
   );  
   const [parts, setParts] = useState([{id:1, number:1}]);
@@ -50,11 +50,6 @@ export default function Home() {
         console.log(e);
       });
   }, [setParts]);
-
-  useEffect(() => {
-    console.log('shoppingCartContents')
-    console.log(shoppingCartContents)
-  }, shoppingCartContents)
   
   const columns = [
     { field: "number", headerName: "Part Number", width: 150 },
