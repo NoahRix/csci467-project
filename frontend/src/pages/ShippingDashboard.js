@@ -2,14 +2,9 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import NumberFormat from 'react-number-format';
 import { makeStyles } from '@material-ui/core/styles';
-import TextField from '@material-ui/core/TextField';
 
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
-
-import IconButton from '@material-ui/core/IconButton';
-import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
-import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 
 import axios from "axios";
 
@@ -25,19 +20,27 @@ const useStyles = makeStyles((theme) => ({
     paddingBottom: theme.spacing(4),
     margin: theme.spacing(3),
     textAlign: 'center',
-    color: 'white',
-    background: '#f5f5f5'
+    color: 'black',
+    background: '#f5f5f5',
   },
   input: {
-    width: '17ch'
+    padding: '10px 0',
+    width: 100,
+    marginLeft: 10,
   },
   hide: {
-    display: 'none'
+    display: 'none',
   },
   show: {
-    display: 'inline'
+    display: 'inline',
+    backgroundColor: '#4842b8',
+    borderRadius: 'none',
+    border: 'none',
+    color: 'white',
+    padding: '10px 20px',
+    marginLeft: 10,
   }
-}));
+}))
 
 function NumberFormatCustom(props) {
   const { inputRef, onChange, ...other } = props;
@@ -51,32 +54,32 @@ function NumberFormatCustom(props) {
             name: props.name,
             value: values.value,
           },
-        });
+        })
       }}
       thousandSeparator
       isNumericString
       prefix="$"
     />
-  );
+  )
 }
 
 NumberFormatCustom.propTypes = {
   inputRef: PropTypes.func.isRequired,
   name: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
-};
+}
 
 export default function ShippingDashboard() {
-  const classes = useStyles();
+  const classes = useStyles()
 
   const [shippingInfo, setShippingInfo] = useState({
-    // Economy: 5.99,
-  });
+    // Economy: 5.99, // example
+  })
 
   const [newShippingType, setNewShippingType] = useState({
     type: '',
-    cost: 0,
-  });
+    cost: 0.00,
+  })
 
   const [showSubmitButton, setShowSubmitButton] = useState('none')
 
@@ -87,147 +90,149 @@ export default function ShippingDashboard() {
     }).then( res => {
       let info = {}
       res.data.map( data => {
-        info[data.type] = parseFloat(data.cost)
+        info[data.type] = data.cost
       })
       setShippingInfo(info)
     }).catch( err => {
       console.log(err)
-    });
-  }, []);
+    })
+  }, [])
 
   const handleChange = (event) => {
     setShippingInfo({
       ...shippingInfo,
-      [event.target.name]: event.target.value === "" ? 0 : parseFloat(event.target.value),
+      [event.target.name]: event.target.value,
+    })
+  }
+  const handleFocus = (event) => {
+    setShowSubmitButton(event.target.name)
+  }
+  const handleSubmitSave = (event) => {
+    let type = event.target.name
+    let cost = event.target.value
+
+    axios({
+      method: "patch",
+      url: "http://localhost:3001/api/shipping_information/update",
+      data: { 
+        type,
+        cost
+      }
+    }).then( res => {
+      console.log(res.data)
+    }).catch( err => {
+      console.log(err)
     });
-  };
+
+    setShowSubmitButton('none')
+  }
+  const handleSubmitDelete = (event) => {
+    let type = event.target.name
+
+    axios({
+      method: "delete",
+      url: "http://localhost:3001/api/shipping_information/delete",
+      data: { type }
+    }).then( res => {
+      console.log(res.data)
+      window.location.reload();
+    }).catch( err => {
+      console.log(err)
+    });
+
+    setShowSubmitButton('none')
+  }
 
   const handleChange2 = (event) => {
     setNewShippingType({
       ...newShippingType,
       [event.target.name]: event.target.value,
-    });
-  };
-
-  const handleFocus = (event) => {
-    setShowSubmitButton(event.target.name)
+    })
   }
-
-  const handleSubmit = (event) => {
-    let shipping_type = event.target.id
-    // let shipping_cost = 0
-
-    // if(event.target.value !== ''){
-    //   shipping_cost = event.target.value
-    // }
+  const handleFocus2 = () => {
+    setShowSubmitButton('add')
+  }
+  const handleSubmit2 = () => {
+    axios({
+      method: "post",
+      url: "http://localhost:3001/api/shipping_information/add",
+      data: newShippingType
+    }).then( res => {
+      console.log(res.data)
+      window.location.reload();
+    }).catch( err => {
+      console.log(err)
+    })
     
-    // console.log(shipping_type)
-    // console.log(shipping_cost)
-
-
-    console.log(event)
-    // console.log(shippingInfo)
-
-    // axios({
-    //   method: "patch",
-    //   url: "http://localhost:3001/api/shipping_information/update",
-    //   data: { 
-    //     type: shipping_type,
-    //     cost: shipping_cost,
-    //   }
-    // }).then( res => {
-    //   console.log(res.data)
-    // }).catch( err => {
-    //   console.log(err)
-    // });
-
     setShowSubmitButton('none')
-  }
-
-  const handleSubmit2 = (event) => {
-    console.log(newShippingType)
-    window.location.reload(false);
-    // axios({
-    //   method: "post",
-    //   url: "http://localhost:3001/api/shipping_information/add",
-    //   data: newShippingType
-    // }).then( res => {
-    //   console.log(res.data)
-    // }).catch( err => {
-    //   console.log(err)
-    // });
   }
 
   return (
     <div className={classes.root}>
       <Grid container spacing={0}>
-        {Object.keys(shippingInfo).map( key => {
-          return <Grid item xs={6} key={key}>
+        {Object.keys(shippingInfo).map( ship_type => {
+          return <Grid item xs={6} key={ship_type}>
             <Paper className={classes.paper}>
-              <TextField
-                label={key}
-                value={shippingInfo[key]}
+              <label>{ship_type} : </label>
+              <input 
+                name={ship_type} 
+                value={shippingInfo[ship_type]} 
+                type="number" 
+                min="0.00" 
+                step="0.01"  
                 onChange={handleChange}
-                name={key}
-                id={key}
-                InputProps={{
-                  inputComponent: NumberFormatCustom,
-                }}
-                variant="outlined"
                 onFocus={handleFocus}
+                className={classes.input}
               />
-              <IconButton 
-                color="primary" 
-                aria-label="save shipping cost"
-                id={key} 
-                value={shippingInfo[key]} 
-                onClick={(e) => handleSubmit(e)}
-                className={showSubmitButton === key ? classes.show : classes.hide}
-              >
-                <CheckCircleOutlineIcon fontSize="large"/>
-              </IconButton>
+              <button 
+                name={ship_type} 
+                value={shippingInfo[ship_type]} 
+                onClick={handleSubmitSave}
+                className={showSubmitButton === ship_type ? classes.show : classes.hide}
+              >Save</button>
+              <button 
+                name={ship_type} 
+                onClick={handleSubmitDelete}
+                className={showSubmitButton === ship_type ? classes.show : classes.hide}
+              >Delete</button>
             </Paper>
           </Grid>
         })}
 
         <Grid item xs={6}>
           <Paper className={classes.paper}>
-            <TextField
-              label='Shipping Type'
-              value={newShippingType.type}
-              onChange={handleChange2}
+            <label>Shipping Type : </label>
+            <input 
               name='type'
-              id='type'
-              variant="outlined"
-              className={classes.input}
-            />
-            <TextField
-              label='Shipping Cost'
-              value={newShippingType.cost}
+              value={newShippingType.type}
+              type='text'
+              placeholder='type'
               onChange={handleChange2}
-              name='cost'
-              id='cost'
-              InputProps={{
-                inputComponent: NumberFormatCustom,
-              }}
-              variant="outlined"
+              onFocus={handleFocus2}
               className={classes.input}
             />
-            <IconButton 
-              color="primary" 
-              aria-label="add new type of shipping"
-              // id={key} 
-              // value={shippingInfo[key]} 
-              onClick={handleSubmit2}
-              // className={showSubmitButton === key ? classes.show : classes.hide}
-            >
-              <AddCircleOutlineIcon fontSize="large"/>
-            </IconButton>
+            <br/><br/>
+            <label>Shipping Cost : </label>
+            <input 
+              name='cost'
+              value={newShippingType.cost}
+              type='number' 
+              min='0.00' 
+              step='0.01' 
+              onChange={handleChange2}
+              onFocus={handleFocus2}
+              className={classes.input}
+            />
+            <br/><br/>
+            <button 
+              name={newShippingType.type} 
+              value={newShippingType.cost} 
+              onClick={handleSubmit2} 
+              className={showSubmitButton === 'add' ? classes.show : classes.hide} 
+            >Add</button>
           </Paper>
         </Grid>
       </Grid>
-
-      {/* <button onClick={() => console.log(newShippingType)}>Testing</button> */}
     </div>
   );
 }
