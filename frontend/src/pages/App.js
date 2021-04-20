@@ -83,7 +83,7 @@ function App() {
   const [selectedPartRows, setSelectedPartRows] = useLocalStorage('selectedPartRows', [])
 
   return (
-    <div>
+    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       <BrowserRouter>
         <Switch>
           <AuthContext.Provider
@@ -114,6 +114,7 @@ function App() {
               setSelectedPartRows
             }}>
             <Navbar/>
+            <br/><br/>
             <Route exact path="/" component={Home}/>
             <Route exact path="/Login" component={LoginPage}/>
             <Route exact path="/ShoppingCart" component={ShoppingCart}/>
@@ -121,7 +122,8 @@ function App() {
             <EmployeeProtectedRoute exact path="/InventoryDashboard" component={InventoryDashboard}/>
             <EmployeeProtectedRoute exact path="/OrdersDashboard" component={OrdersDashboard}/>
             <AdminProtectedRoute exact path="/ShippingDashboard" component={ShippingDashboard}/>
-            <Footer/>
+            <br/><br/>
+            <Footer style={{ marginTop: 'auto' }}/>
           </AuthContext.Provider>
         </Switch>
       </BrowserRouter>
