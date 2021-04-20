@@ -21,8 +21,12 @@ const useStyles = makeStyles((theme) => ({
     title: {
         flexGrow: 1,
     },
-    toolBar: {
-        alignContent: "start",
+    title: {
+        flexGrow: 1,
+        display: 'block',
+    },
+    link: {
+        marginRight: 15,
     },
 }));
 
@@ -75,19 +79,22 @@ export default function Navbar() {
     return (
         <div className={classes.root}>
             <AppBar position="static">
-                <Toolbar className={classes.toolBar}>
-                    <img
+                <Toolbar>
+                    <img 
                         src={logo}
                         alt="Logo could not load"
                         width="50px"
                         height="50px"
                     />
-                    <Button component={Link} to="/" color="inherit">
-                        {" "}
-                        1A Project{" "}
+                    <Button className={classes.title} component={Link} to="/" color="inherit">
+                        1A Project
+                    </Button>
+                    <Button className={classes.link} component={Link} to="/" color="inherit">
+                        Home
                     </Button>
                     {isCustomerAuthed && (
                         <Button
+                            className={classes.link}
                             component={Link}
                             to="/CustomerOrders"
                             color="inherit"
@@ -95,45 +102,48 @@ export default function Navbar() {
                             Orders
                         </Button>
                     )}
-                    <Button component={Link} to="/ShoppingCart" color="inherit">
+                    <Button className={classes.link} component={Link} to="/ShoppingCart" color="inherit">
                         Shopping Cart
                     </Button>
                     {isEmployeeAuthed && (
                         <Button
+                            className={classes.link}
                             component={Link}
                             to="/InventoryDashboard"
                             color="inherit"
                         >
-                            Inventory Dashboard
+                            Inventory
                         </Button>
                     )}
                     {isAdmin && (
                         <Button
+                            className={classes.link}
                             component={Link}
                             to="/ShippingDashboard"
                             color="inherit"
                         >
-                            Shipping Dashboard
+                            Shipping
                         </Button>
                     )}
                     {isAdmin && (
                         <Button
+                            className={classes.link}
                             component={Link}
                             to="/OrdersDashboard"
                             color="inherit"
                         >
-                            Orders Dashboard
+                            Fulfill Orders
                         </Button>
                     )}
                     {isCustomerAuthed || isEmployeeAuthed ? (
                         <>
-                            <Button onClick={handleLogout} color="inherit">
+                            <Button className={classes.link} onClick={handleLogout} color="inherit">
                                 Logout
                             </Button>
-                            <Typography>{`Hello ${userName}!`}</Typography>
+                            <Typography>{`${userName.toUpperCase()}`}</Typography>
                         </>
                     ) : (
-                        <Button component={Link} to="/Login" color="inherit">
+                        <Button className={classes.link} component={Link} to="/Login" color="inherit">
                             Login
                         </Button>
                     )}

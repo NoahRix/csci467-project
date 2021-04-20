@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
   },
   show: {
     display: 'inline',
-    backgroundColor: '#4842b8',
+    backgroundColor: '#3F51B5',
     borderRadius: 'none',
     border: 'none',
     color: 'white',
