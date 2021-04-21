@@ -5,6 +5,9 @@ import {
     Paper,
     Checkbox,
     FormControlLabel,
+    Typography,
+    Link,
+    Box
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import axios from "axios";
@@ -29,9 +32,19 @@ export default function LoginPage(props) {
     const [showError, setShowError] = useState(false);
     const [isEmployee, setIsEmployee] = useState(false);
 
-    const { setIsAdmin, setIsCustomerAuthed, isCustomerAuthed, setIsEmployeeAuthed, isEmployeeAuthed, setId, id, setEmailAddress } = useContext(
-        AuthContext
-    );
+    const { 
+        setIsAdmin, 
+        setIsCustomerAuthed, 
+        isCustomerAuthed, 
+        setIsEmployeeAuthed, 
+        setEmployeeAccessToken,
+        setEmployeeRefreshToken,
+        setCustomerAccessToken,
+        setCustomerRefreshToken,
+        setId, 
+        id, 
+        setEmailAddress 
+    } = useContext(AuthContext);
 
     const getCustomerInfo = () => {
 
@@ -62,8 +75,16 @@ export default function LoginPage(props) {
                 console.log("IdInput");
                 console.log(IdInput);
                 setId(parseInt(IdInput));
-                if (isEmployee) setIsEmployeeAuthed(isEmployee);
-                else setIsCustomerAuthed(!isEmployee);
+                if (isEmployee) {
+                    setIsEmployeeAuthed(isEmployee);
+                    setEmployeeAccessToken(res.data.access_token);
+                    setEmployeeRefreshToken(res.data.refresh_token);
+                }
+                else {
+                    setIsCustomerAuthed(!isEmployee);
+                    setCustomerAccessToken(res.data.access_token);
+                    setCustomerRefreshToken(res.data.refresh_token);
+                }
                 setIsAdmin(res.data.is_admin);
                 getCustomerInfo();
                 props.history.push("/");
@@ -106,6 +127,10 @@ export default function LoginPage(props) {
                         labelPlacement="start"
                     />
                     <Button onClick={handleLogin}>Login</Button>
+                    <Typography style={{display: "flex", flexDirection: "column", margin: "auto"}}>
+                        Not yet a customer? <br/>
+                        <Link style={{margin: "auto"}} href="/Register">Register</Link>
+                    </Typography>
                 </Paper>
             </form>
         </div>

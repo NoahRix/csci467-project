@@ -147,7 +147,11 @@ function Row(props) {
 }
 
 export default function CustomerOrders() {
-  const { id } = useContext( AuthContext );
+  const { 
+    id,
+    customerAccessToken,
+    employeeAccessToken
+  } = useContext( AuthContext );
 
   const [ordersList, setOrdersList] = useState([])
 
@@ -158,6 +162,7 @@ export default function CustomerOrders() {
       method: "post",
       url: "http://localhost:3001/api/orders/ordersOfCustomer",
       data: { customerId: id },
+      headers: { authorization: "Bearer " + customerAccessToken  }
     }).then( res => {
       res.data.forEach( o => {
         let twoJSON = {}
@@ -174,6 +179,7 @@ export default function CustomerOrders() {
           method: "post",
           url: "http://localhost:3001/api/orders/orderItems",
           data: { orderId: o.id },
+          headers: { authorization: "Bearer " + customerAccessToken ? customerAccessToken : employeeAccessToken }
         }).then( res => {
           res.data.forEach( i => {
             let oneJSON = {}
@@ -186,6 +192,7 @@ export default function CustomerOrders() {
               method: "post",
               url: "http://localhost:3001/api/parts/by-part-number/",
               data: { partNumber: i.part_id },
+              headers: { authorization: "Bearer " + customerAccessToken ? customerAccessToken : employeeAccessToken }
             }).then( res => {
               res.data.forEach( item => {
                 oneJSON['itemDescription'] = item.description;

@@ -59,19 +59,33 @@ exports.address = (address, result) => {
     db_tools.execute('select * from customers where address = ?', result, [address]);
 }
 
-exports.addCustomer = (customer, result) => {
-    db_tools.execute('insert into customers (name, address, email, phone) values (?, ?, ?, ?)', 
+/**
+ *  Inserts a new customer.
+ * 
+ *  @param customer The customer object.
+ *  @param result Callback to send back data.
+ */
+ exports.addCustomer = (customer, result) => {
+    db_tools.execute('insert into customers (name, address, email, phone, password, refresh_token) values (?, ?, ?, ?, ?, ?); select last_insert_id() as last_id;', 
         result, 
         [
             customer.name,
             customer.address,
             customer.email,
-            customer.phone
+            customer.phone,
+            customer.password,
+            customer.refresh_token
         ]
     );
 }
 
-exports.updateCustomer = (customer, result) => {
+/**
+ *  Updates a customer row.
+ * 
+ *  @param customer The customer object.
+ *  @param result Callback to send back data.
+ */
+ exports.updateCustomer = (customer, result) => {
     db_tools.execute('update customers set name = ?, address = ?, email = ?, phone = ? where id = ?', 
         result, 
         [
@@ -84,6 +98,12 @@ exports.updateCustomer = (customer, result) => {
     );
 }
 
-exports.deleteCustomer = (id, result) => {
+/**
+ *  Deletes a new customer.
+ * 
+ *  @param id The customer id.
+ *  @param result Callback to send back data.
+ */
+ exports.deleteCustomer = (id, result) => {
     db_tools.execute('delete from customers where id = ?', result, [id]);
 }

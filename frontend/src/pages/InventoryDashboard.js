@@ -1,10 +1,11 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import axios from 'axios';
 import { Typography, Paper, TextField, IconButton, Tooltip } from '@material-ui/core';
 import { Check, Edit } from '@material-ui/icons';
 import { DataGrid } from '@material-ui/data-grid';
 import  ImageFrame from '../components/ImageFrame';
 import { makeStyles } from "@material-ui/core/styles";
+import { AuthContext } from '../utils/AuthContext';
 
 const useStyles = makeStyles(() => ({
     cellCustom: {
@@ -29,17 +30,19 @@ function QuantityRowField({quantity, part_id, updateQuantities, updateTotalFloor
     const [rowQuantity, setRowQuantity] = useState(quantity);
     const [canEdit, setCanEdit] = useState(false);
 
+    const { employeeAccessToken } = useContext(AuthContext);
+
     const handleQuantityChange = (newQuantity, id) => {
         setRowQuantity(newQuantity);
         updateQuantities(newQuantity);
     }
-
     
     const handleSubmitQuantity = () => {        
         axios({
             method: "post",
             url: "http://localhost:3001/api/inventory/update",
-            data: {quantity: rowQuantity, part_id}
+            data: {quantity: rowQuantity, part_id},
+            headers: { authorization: "Bearer " + employeeAccessToken }        
         }).then(res => {
             console.log(res.data);
             updateTotalFloorPrice();
@@ -68,6 +71,8 @@ export default function InventoryDashboard(){
 
     const classes = useStyles();
 
+    const { employeeAccessToken } = useContext(AuthContext);
+
     const [rows, setRows] = useState([]);
     const [totalFloorPrice, setTotalFloorPrice] = useState(0.0);
 
@@ -78,7 +83,8 @@ export default function InventoryDashboard(){
     const updateTotalFloorPrice = () => {
         axios({
             method: "get",
-            url: "http://localhost:3001/api/inventory/total-floor-price"
+            url: "http://localhost:3001/api/inventory/total-floor-price",
+            headers: { authorization: "Bearer " + employeeAccessToken }
         }).then(res => {
             setTotalFloorPrice(res.data);
         })
@@ -88,7 +94,8 @@ export default function InventoryDashboard(){
     useEffect(() => {
         axios({
             method: "get",
-            url: "http://localhost:3001/api/inventory/all-with-parts"
+            url: "http://localhost:3001/api/inventory/all-with-parts",
+            headers: { authorization: "Bearer " + employeeAccessToken }
         }).then(res => {
             setRows(res.data.map((row, id) => {return {id, ...row}}));
             updateTotalFloorPrice();

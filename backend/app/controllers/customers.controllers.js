@@ -72,19 +72,37 @@ exports.address = (req, res) => {
     })
 }
 
-exports.addCustomer = (req, res) => {
+/**
+ *  This controls inserting a new customer.
+ *
+ *  @param req Request data that holds the customer object.
+ *  @param res Response data.
+ */
+ exports.addCustomer = (req, res) => {
     customers.addCustomer(req.body, (data) => {
         res.send(data);
     })
 }
 
-exports.updateCustomer = (req, res) => {
+/**
+ *  This controls updating an existing customer.
+ *
+ *  @param req Request data that holds the customer object.
+ *  @param res Response data.
+ */
+ exports.updateCustomer = (req, res) => {
     customers.updateCustomer(req.body, (data) => {
         res.send(data);
     })
 }
 
-exports.deleteCustomer = (req, res) => {
+/**
+ *  This controls deleting an existing customer.
+ *
+ *  @param req Request data that holds the customer id.
+ *  @param res Response data.
+ */
+ exports.deleteCustomer = (req, res) => {
     customers.deleteCustomer(req.body.id, (data) => {
         res.send(data);
     })

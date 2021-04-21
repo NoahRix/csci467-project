@@ -1,4 +1,4 @@
-let aws = true;
+let aws = false;
 
 //Database configuration.
 var mysql = require('mysql')

@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import NumberFormat from 'react-number-format';
 import { makeStyles } from '@material-ui/core/styles';
-
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
-
 import axios from "axios";
+import { AuthContext } from '../utils/AuthContext';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -83,6 +82,8 @@ export default function ShippingDashboard() {
 
   const [showSubmitButton, setShowSubmitButton] = useState('none')
 
+  const { employeeAccessToken } = useContext(AuthContext);
+
   useEffect(() => {
     axios({
       method: "get",
@@ -114,6 +115,7 @@ export default function ShippingDashboard() {
     axios({
       method: "patch",
       url: "http://localhost:3001/api/shipping_information/update",
+      headers: { authorization: "Bearer " + employeeAccessToken },
       data: { 
         type,
         cost
@@ -131,8 +133,9 @@ export default function ShippingDashboard() {
 
     axios({
       method: "delete",
+      data: { type },
       url: "http://localhost:3001/api/shipping_information/delete",
-      data: { type }
+      headers: { authorization: "Bearer " + employeeAccessToken }
     }).then( res => {
       console.log(res.data)
       window.location.reload();
@@ -156,6 +159,7 @@ export default function ShippingDashboard() {
     axios({
       method: "post",
       url: "http://localhost:3001/api/shipping_information/add",
+      headers: { authorization: "Bearer " + employeeAccessToken },
       data: newShippingType
     }).then( res => {
       console.log(res.data)
