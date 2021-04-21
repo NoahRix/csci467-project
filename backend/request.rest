@@ -1,5 +1,17 @@
 
 ###
+POST http://localhost:3001/api/auth/register
+Content-Type: application/json
+
+{
+    "address": "34567w98 Street",
+    "phone": "5555555555",
+    "name": "Spunchbob",
+    "email": "rix.noah@yahoo.com",
+    "password": "1234"
+}
+
+###
 GET http://localhost:3001/api/test/test
 Content-Type: application/json
 

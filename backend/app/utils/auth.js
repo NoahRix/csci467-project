@@ -2,13 +2,17 @@ const JWT = require('jsonwebtoken');
 require('dotenv').config();
 
 // True = to test APIs on backend. False = to function normally. 
-let debug = true;
+let debug = false;
 
 exports.authenticateToken = (req, res, next) => {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
     if (token == null) return res.sendStatus(401);
-    jwt.verify(token, req.body.is_customer ? process.env.CUSTOMER_ACCESS_TOKEN_SECRET : process.env.EMPLOYEE_ACCESS_TOKEN_SECRET, (err) => {
+    
+    console.log("auth header: " + authHeader);
+    console.log("token: " + token);
+    
+    JWT.verify(token, req.body.is_customer ? process.env.CUSTOMER_ACCESS_TOKEN_SECRET : process.env.EMPLOYEE_ACCESS_TOKEN_SECRET, (err) => {
         if (err) return res.sendStatus(403);
         next();
     })

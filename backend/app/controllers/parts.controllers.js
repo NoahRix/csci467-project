@@ -66,7 +66,13 @@ exports.weightRange = (req, res) => {
     }, req.body);
 }
 
-exports.test = async (req, res) => {
+/**
+ *  test: fucntionality can vary.
+ *
+ *  @param req Request body that holds test data.
+ *  @param res Response data.
+ */
+ exports.test = async (req, res) => {
 
     let part_numbers = [];
     
@@ -81,8 +87,6 @@ exports.test = async (req, res) => {
     });
 
     await get_part_numbers;
-
-
 
     res.send(part_numbers);
 }

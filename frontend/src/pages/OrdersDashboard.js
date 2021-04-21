@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import {
     Tabs,
@@ -27,6 +27,7 @@ import {
 } from "@material-ui/icons";
 import ImageFrame from "../components/ImageFrame";
 import { makeStyles } from "@material-ui/core/styles";
+import { AuthContext } from "../utils/AuthContext";
 
 const useStyles = makeStyles(() => ({
     root: {
@@ -59,11 +60,14 @@ function Row({ row, updateOrders }) {
     const [open, setOpen] = useState(false);
     const [orderItems, setOrderItems] = useState([]);
     
+    const { employeeAccessToken } = useContext(AuthContext);
+
     const handleDeleteOrder = (id) => {
         axios({
             method: "delete",
             url: "http://localhost:3001/api/orders/delete",
-            data: {id}
+            headers: { authorization: "Bearer " + employeeAccessToken },
+            data: {id},
         }).then(res => {
             console.log(res.data);
             updateOrders();
@@ -76,6 +80,7 @@ function Row({ row, updateOrders }) {
         axios({
             method: "post",
             url: "http://localhost:3001/api/orders/ship",
+            headers: { authorization: "Bearer " + employeeAccessToken },
             data: {id}
         }).then(res => {
             console.log(res.data);
@@ -89,6 +94,7 @@ function Row({ row, updateOrders }) {
         axios({
             method: "post",
             url: "http://localhost:3001/api/orders/confirm",
+            headers: { authorization: "Bearer " + employeeAccessToken },
             data: {id}
         }).then(res => {
             console.log(res.data);
@@ -104,6 +110,7 @@ function Row({ row, updateOrders }) {
             axios({
                 method: "post",
                 url: "http://localhost:3001/api/orders/orderItemsJoined",
+                headers: { authorization: "Bearer " + employeeAccessToken },
                 data: {orderId: row.id}
             }).then(res => {
                 console.log(res.data);
@@ -227,6 +234,8 @@ function Row({ row, updateOrders }) {
 export default function OrdersDashboard() {
     const classes = useStyles();
 
+    const { employeeAccessToken } = useContext(AuthContext);
+
     const [tabValue, setTabValue] = useState(0);
     const [allOrders, setAllOrders] = useState([]);
     const [orders, setOrders] = useState([]);
@@ -250,6 +259,7 @@ export default function OrdersDashboard() {
         axios({
             method: "get",
             url: "http://localhost:3001/api/orders/allWithNames",
+            headers: { authorization: "Bearer " + employeeAccessToken }
         }).then((res) => {
             console.log(res.data);
             setAllOrders(res.data);

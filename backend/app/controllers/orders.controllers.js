@@ -3,15 +3,24 @@ const parts = require("../models/parts.models.js");
 const customers = require("../models/customers.models.js");
 const inventory = require("../models/inventory.models.js");
 const nodemailer = require('nodemailer');
-const { networkInterfaces } = require("os");
 
-exports.allOrders = (req, res) => {
+/**
+ *  This get all order rows.
+ *
+ *  @param res Response data.
+ */
+ exports.allOrders = (req, res) => {
     orders.allOrders(data => {
         res.send(data);
     })
 }
 
-exports.allOrdersWithNames = async (req, res) => {
+/**
+ *  This get all order with the customer names attached.
+ *
+ *  @param res Response data.
+ */
+ exports.allOrdersWithNames = async (req, res) => {
     
     let orders_data = []; 
 
@@ -51,31 +60,62 @@ exports.allOrdersWithNames = async (req, res) => {
     res.send(orders_data);
 }
 
-exports.ordersOfCustomer = (req, res) => {
+/**
+ *  This gets all orders of a single customer.
+ *
+ *  @param req Request body that holds the customer id.
+ *  @param res Response data.
+ */
+ exports.ordersOfCustomer = (req, res) => {
     orders.ordersOfCustomer(req.body.customerId, data => {
         res.send(data);
     })
 }
 
-exports.addOrder = (req, res) => {
+/**
+ *  This adds a new order to the database.
+ *
+ *  @param req Request body that holds the customer id.
+ *  @param res Response data.
+ */
+ exports.addOrder = (req, res) => {
     orders.addOrder(req.body, (data) => {
         res.send(data);
     })
 }
 
-exports.updateOrder = (req, res) => {
+/**
+ *  This updates a single order.
+ *
+ *  @param req Request body that holds the order object.
+ *  @param res Response data.
+ */
+ exports.updateOrder = (req, res) => {
     orders.updateOrder(req.body, (data) => {
         res.send(data);
     })
 }
 
-exports.deleteOrder = (req, res) => {
+/**
+ *  This deletes a single order.
+ *
+ *  @param req Request body that holds the order id.
+ *  @param res Response data.
+ */
+ exports.deleteOrder = (req, res) => {
     orders.deleteOrder(req.body.id, (data) => {
         res.send(data);
     })
 }
 
-exports.confirmOrder = (req, res) => {
+/**
+ *  This sets the confirmed flag of an order to true 
+ *  and then sends an email.
+ *
+ *  @param req Request body that holds the order id.
+ *  @param res Response data.
+ */
+ exports.confirmOrder = (req, res) => {
     orders.confirmOrder(req.body.id, (data) => {
         res.send(data);
     });
@@ -83,13 +123,26 @@ exports.confirmOrder = (req, res) => {
     sendEmail(req.body.id, false);
 }
 
-exports.cancelOrder = (req, res) => {
+/**
+ *  This sets the canceled flag of an order to true.
+ *
+ *  @param req Request body that holds the order id.
+ *  @param res Response data.
+ */
+ exports.cancelOrder = (req, res) => {
     orders.cancelOrder(req.body.id, (data) => {
         res.send(data);
     })
 }
 
-exports.shipOrder = async (req, res) => {
+/**
+ *  This sets the shipped flag of an order to true 
+ *  and then sends an email.
+ *
+ *  @param req Request body that holds the order id.
+ *  @param res Response data.
+ */
+ exports.shipOrder = async (req, res) => {
     
     // Set the shipping flag of the order.
     orders.shipOrder(req.body.id, (data) => {
@@ -135,13 +188,26 @@ exports.shipOrder = async (req, res) => {
     await update_inventory_rows;
 }
 
-exports.orderItems = (req, res) => {
+/**
+ *  This gets all of the items of an single order.
+ *
+ *  @param req Request body that holds the order id.
+ *  @param res Response data.
+ */
+ exports.orderItems = (req, res) => {
     orders.orderItems(req.body.orderId, (data) => {
         res.send(data);
     })
 }
 
-exports.orderItemsJoined = async (req, res) => {
+/**
+ *  This gets all of the items of an single order 
+ *  and attacches the parts information.
+ *
+ *  @param req Request body that holds the order id.
+ *  @param res Response data.
+ */
+ exports.orderItemsJoined = async (req, res) => {
     
     let order_items = [];
     
@@ -175,13 +241,27 @@ exports.orderItemsJoined = async (req, res) => {
     res.send(order_parts);
 }
 
-exports.addOrderItems = (req, res) => {
+/**
+ *  This add items to the order_times table.
+ *
+ *  @param req Request body that holds the order id.
+ *  @param res Response data.
+ */
+ exports.addOrderItems = (req, res) => {
     orders.addOrderItems(req.body, (data) => {
         res.send(data);
     });
 }
 
-async function sendEmail(id, flag){
+/**
+ *  This uses the nodemailer service to send email 
+ *  about the status of an order. It builds html 
+ *  for the order contents.
+ *
+ *  @param id Order id (Number).
+ *  @param flag shipped or confirmed boolean.
+ */
+ async function sendEmail(id, flag){
     let order = null;
 
     // Get the order based on the given order id.

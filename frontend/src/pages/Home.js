@@ -8,9 +8,11 @@ import { Search } from "@material-ui/icons"
 import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
 import { TextField } from '@material-ui/core';
 export default function Home() {
-  const { setShoppingCartContents, selectedPartRows, setSelectedPartRows } = useContext(
-    AuthContext
-  );  
+  const { 
+    setShoppingCartContents, 
+    selectedPartRows, 
+    setSelectedPartRows, 
+} = useContext(AuthContext);  
   const [parts, setParts] = useState([{id:1, number:1}]);
   let localCart = [];
   let selectedRows = [];

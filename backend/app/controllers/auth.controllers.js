@@ -1,4 +1,5 @@
 const Auth = require("../models/auth.models.js");
+const Customers = require("../models/customers.models.js");
 const AuthUtil = require('../utils/auth.js');
 const Bcrypt = require('bcryptjs');
 const JWT = require('jsonwebtoken');
@@ -90,6 +91,33 @@ exports.userLogout = (req, res) => {
     else
         Auth.employeeLogout(req.body.id, (data) => {res.send(data);});
 }
+
+/**
+*  Makes a request to register an new employee or customer. 
+*
+*  @param req Request body that holds the employee's or customer's information.
+*  @param res Response data.
+*/
+exports.register = async (req, res) => {
+    
+    let salt = await Bcrypt.genSalt();
+    let hashed_password = await Bcrypt.hash(req.body.password, salt); 
+    
+    let customer = {
+        name: req.body.name,
+        address: req.body.address,
+        email: req.body.email,
+        phone: req.body.phone,
+        password: hashed_password,
+        refresh_token: null,
+    };
+ 
+    Customers.addCustomer(customer, (data) => {
+        res.send(data);
+    });
+}
+    
+ 
 
 /**
 *  Makes a request to refresh the employee's or customer's access token by providing 

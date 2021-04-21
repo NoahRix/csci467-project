@@ -13,6 +13,7 @@ import CustomerProtectedRoute from './CustomerProtectedRoute';
 import EmployeeProtectedRoute from './EmployeeProtectedRoute';
 import AdminProtectedRoute from './AdminProtectedRoute';
 import LoginPage from './LoginPage';
+import RegisterPage from './RegisterPage';
 
 function useLocalStorage(key, initialValue) {
 
@@ -114,16 +115,19 @@ function App() {
               setSelectedPartRows
             }}>
             <Navbar/>
-            <br/><br/>
-            <Route exact path="/" component={Home}/>
-            <Route exact path="/Login" component={LoginPage}/>
-            <Route exact path="/ShoppingCart" component={ShoppingCart}/>
-            <CustomerProtectedRoute exact path="/CustomerOrders" component={CustomerOrders}/>
-            <EmployeeProtectedRoute exact path="/InventoryDashboard" component={InventoryDashboard}/>
-            <EmployeeProtectedRoute exact path="/OrdersDashboard" component={OrdersDashboard}/>
-            <AdminProtectedRoute exact path="/ShippingDashboard" component={ShippingDashboard}/>
-            <br/><br/>
-            <Footer style={{ marginTop: 'auto' }}/>
+            <div style={{display: "flex", flexDirection: "column"}}>
+              <div>
+                <Route exact path="/" component={Home}/>
+                <Route exact path="/Login" component={LoginPage}/>
+                <Route exact path="/Register" component={RegisterPage}/>
+                <Route exact path="/ShoppingCart" component={ShoppingCart}/>
+                <CustomerProtectedRoute exact path="/CustomerOrders" component={CustomerOrders}/>
+                <EmployeeProtectedRoute exact path="/InventoryDashboard" component={InventoryDashboard}/>
+                <EmployeeProtectedRoute exact path="/OrdersDashboard" component={OrdersDashboard}/>
+                <AdminProtectedRoute exact path="/ShippingDashboard" component={ShippingDashboard}/>
+              </div>
+              <Footer/>
+            </div>
           </AuthContext.Provider>
         </Switch>
       </BrowserRouter>

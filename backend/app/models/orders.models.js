@@ -1,14 +1,31 @@
 const db_tools = require("../utils/db-tools");
 
-exports.allOrders = result => {
+/**
+ *  Gets all order rows. 
+ * 
+ *  @param result Result set data.
+ */
+ exports.allOrders = result => {
     db_tools.execute('select * from orders', result);
 }
 
-exports.ordersOfCustomer = (customerId, result) => {
+/**
+ *  Gets all order rows of a customer.  
+ * 
+ *  @param customerId ID number of a customer.
+ *  @param result Result set data.
+ */
+ exports.ordersOfCustomer = (customerId, result) => {
     db_tools.execute('select * from orders where customer_id = ?', result, [customerId]);
 }
 
-exports.addOrder = (order, result) => {
+/**
+ *  Adds a new order to the orders table. 
+ * 
+ *  @param order Oject of an order.
+ *  @param result Result set data.
+ */
+ exports.addOrder = (order, result) => {
     console.log(order);
     db_tools.execute(`insert into orders (
                         timestamp, 
@@ -47,7 +64,13 @@ exports.addOrder = (order, result) => {
     );
 }
 
-exports.updateOrder = (order, result) => {
+/**
+ *  Updates and existing order row.
+ * 
+ *  @param order Order object.
+ *  @param result Result set data.
+ */
+ exports.updateOrder = (order, result) => {
     db_tools.execute(`UPDATE orders SET 
                         timestamp = ?, 
                         order_shipped = ?, 
@@ -85,26 +108,62 @@ exports.updateOrder = (order, result) => {
     );
 }
 
+/**
+ *  Gets a single order row based on an order id.
+ * 
+ *  @param id Order ID Number.
+ *  @param result Result set data.
+ */
 exports.byID = (id, result) => {
     db_tools.execute('select * from orders where id = ?', result, [id]);
 }
 
+/**
+ *  Deletes and existing order row. 
+ * 
+ *  @param id Order ID Number.
+ *  @param result Result set data.
+ */
 exports.deleteOrder = (id, result) => {
     db_tools.execute('delete from orders where id = ?', result, [id]);
 }
 
+/**
+ *  Sets the confirmed flag to true. 
+ * 
+ *  @param id Order ID Number.
+ *  @param result Result set data.
+ */
 exports.confirmOrder = (id, result) => {
     db_tools.execute('update orders set order_confirmed = 1 where id = ?', result, [id]);
 }
 
-exports.shipOrder = (id, result) => {
+/**
+ *  Sets the shipped flag to true.
+ * 
+ *  @param id Order ID Number.
+ *  @param result Result set data.
+ */
+ exports.shipOrder = (id, result) => {
     db_tools.execute('update orders set order_shipped = 1 where id = ?', result, [id]);
 }
 
-exports.orderItems = (orderId, result) => {
+/**
+ *  Gets the order_items rows of a single order.
+ * 
+ *  @param orderId Order ID Number.
+ *  @param result Result set data.
+ */
+ exports.orderItems = (orderId, result) => {
     db_tools.execute('select * from order_items where order_id = ?', result, [orderId]);
 }
 
+/**
+ *  Inserts new order items of single order.
+ * 
+ *  @param 
+ *  @param result Result set data.
+ */
 exports.addOrderItems = (orderItems, result) => {
 
     let sqlStatement = "insert into order_items values "
@@ -120,6 +179,5 @@ exports.addOrderItems = (orderItems, result) => {
     
     console.log(sqlStatement);
     console.log(values);
-    //result("ITEMS");
     db_tools.execute(sqlStatement, result, values);
 }

@@ -3,6 +3,9 @@
     background-color: #3F51B5;
     color: white;
     padding: 20px;
+    bottom: 0px;
+    width: 100%;
+    position: fixed;
     justify-content: space-around;
 }
 
