@@ -25,48 +25,6 @@ const useRowStyles = makeStyles({
   },
 });
 
-// Row.propTypes = {
-//   row: PropTypes.shape({
-//     calories: PropTypes.number.isRequired,
-//     carbs: PropTypes.number.isRequired,
-//     fat: PropTypes.number.isRequired,
-//     history: PropTypes.arrayOf(
-//       PropTypes.shape({
-//         amount: PropTypes.number.isRequired,
-//         customerId: PropTypes.string.isRequired,
-//         date: PropTypes.string.isRequired,
-//       }),
-//     ).isRequired,
-//     name: PropTypes.string.isRequired,
-//     price: PropTypes.number.isRequired,
-//     protein: PropTypes.number.isRequired,
-//   }).isRequired,
-// };
-
-// Order.PropTypes = {
-//   order: PropTypes.shape({
-//     orderNumber: PropTypes.number.isRequired,
-//     orderDate: PropTypes.string.isRequired,
-//     orderStatus: PropTypes.string.isRequired,
-//     totalItems: PropTypes.number.isRequired,
-//     totalPrice: PropTypes.number.isRequired,
-//     paymentInfo: PropTypes.string.isRequired,
-//     taxAmount: PropTypes.number.isRequired,
-//     shippingAndHandlingPrice: PropTypes.number.isRequired,
-//     billingAddress: PropTypes.string.isRequired,
-//     shippingAddress: PropTypes.string.isRequired,
-//     itemDetails: PropTypes.arrayOf(
-//       PropTypes.shape({
-//         itemNumber: PropTypes.number.isRequired,
-//         itemDescription: PropTypes.string.isRequired,
-//         itemPrice: PropTypes.number.isRequired,
-//         itemPicURL: PropTypes.string.isRequired,
-//         itemQuantity: PropTypes.number.isRequired,
-//       }),
-//     ).isRequired,
-//   }).isRequired,
-// };
-
 function Row(props) {
   const { row } = props;
   const [open, setOpen] = React.useState(false);
@@ -256,8 +214,6 @@ export default function CustomerOrders() {
           ))}
         </TableBody>
       </Table>
-
-      <button onClick={() => clicked()}>Test</button>
     </TableContainer>
   );
 }

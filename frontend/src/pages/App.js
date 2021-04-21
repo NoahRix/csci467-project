@@ -116,7 +116,7 @@ function App() {
             }}>
             <Navbar/>
             <div style={{display: "flex", flexDirection: "column"}}>
-              <div>
+              <div style={{paddingBottom: "100px"}}>
                 <Route exact path="/" component={Home}/>
                 <Route exact path="/Login" component={LoginPage}/>
                 <Route exact path="/Register" component={RegisterPage}/>
