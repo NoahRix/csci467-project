@@ -1,0 +1,8 @@
+POST http://localhost:3001/api/customers/by-id
+Content-Type: application/json
+
+{
+    "id": 1
+}
+###
+//aditional queries go here
